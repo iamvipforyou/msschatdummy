@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+
+
+    <color name="viewBg">#f1f5f8</color>
+    <color name="album_title">#4c4c4c</color>
+
+
+    <!--Colors-->
+
+
+    <color name="bottom_border_color">#D9D9D9</color>
+    <color name="list_items_color">#1d1b26</color>
+    <color name="light_grey">#f3f3f3</color>
+    <color name="app_color">#c984a3</color>
+    <color name="status_color">	#aa7285</color>
+    <color name="white">#ffffff</color>
+    <color name="app_pass_done">#08AE9E</color>
+    <color name="progress_back">#FBFBFB</color>
+    <color name="chat_back_color">#55646D</color>
+    <color name="chat_edit_color">#62727C</color>
+    <color name="sender_color">#00B4FF</color>
+    <color name="receiver_color">#56646D</color>
+
+    <color name="item_title_color">#212121</color>
+    <color name="save_artical_color_date">#616161</color>
+    <color name="app_back_ground">#FAFAFA</color>
+
+    <color name="share_app">#ef5354</color>
+    <color name="share_sms">#db4445</color>
+    <color name="share_email">#c33c3d</color>
+    <color name="bottom_bar_color">#55646d</color>
+    <color name="setup_store_bg">#787878</color>
+    <color name="story_hint_color">#BDBDBD</color>
+
+
+
+
+
+
+
+
+
+    <color name="black">#000000</color>
+    <color name="blacktransparent">#66000000</color>
+    <color name="overlay">#AA1C1C1C</color>
+    <color name="message_btn_color">#F2F2F2</color>
+    <color name="profile_back_color">#E6E6E6</color>
+    <color name="setting_color">#E5DFE9</color>
+    <color name="setting_switch_color">#D1D1D1</color>
+    <color name="sent_message_color">#808080</color>
+    <color name="dividing_line">#703D97</color>
+    <color name="colorSheetText">#DE000000</color>
+
+
+</resources>

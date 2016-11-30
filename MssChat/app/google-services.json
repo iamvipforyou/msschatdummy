@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "794131587490",
+    "firebase_url": "https://msschat-c4c7c.firebaseio.com",
+    "project_id": "msschat-c4c7c",
+    "storage_bucket": "msschat-c4c7c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:794131587490:android:5a93c6cbc5a4eb68",
+        "android_client_info": {
+          "package_name": "com.mss.msschat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "794131587490-g4lktgoval5bdj6eccsp9s8r2sd2ar6n.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mss.msschat",
+            "certificate_hash": "B7A4F1A88ED129858710BCE7CC387443AD205425"
+          }
+        },
+        {
+          "client_id": "794131587490-gnfu9f1uk2rdvr6qq50t8rp0dvedajhk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDK1ocpgnnCTocRCpgG4AzKy12dBTxyJpY"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "794131587490-gnfu9f1uk2rdvr6qq50t8rp0dvedajhk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
