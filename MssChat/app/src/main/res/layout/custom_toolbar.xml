@@ -1,15 +1,14 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:layout_width="match_parent"
-                android:layout_height="?android:attr/actionBarSize"
-                android:background="@color/app_color">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="?android:attr/actionBarSize"
+    android:background="@color/app_color">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:theme="@style/AppTheme.AppBarOverlay"
-      >
+        android:theme="@style/AppTheme.AppBarOverlay">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
@@ -42,7 +41,7 @@
                         android:gravity="center"
                         android:paddingRight="@dimen/text_size_small"
                         android:src="@mipmap/ic_message_white_24dp"
-                        android:visibility="visible"/>
+                        android:visibility="visible" />
                 </LinearLayout>
 
                 <RelativeLayout
@@ -60,7 +59,8 @@
                         android:gravity="center"
                         android:text=""
                         android:textColor="@android:color/white"
-                        android:textSize="@dimen/text_size_midnormal"/>
+                        android:textSize="@dimen/text_size_midnormal"
+                        android:textStyle="bold" />
 
                 </RelativeLayout>
 
@@ -87,7 +87,7 @@
                             android:layout_height="wrap_content"
                             android:background="@null"
                             android:gravity="center"
-                            android:visibility="visible"/>
+                            android:visibility="visible" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -108,7 +108,7 @@
                             android:layout_height="wrap_content"
                             android:background="@null"
                             android:gravity="center"
-                            android:visibility="visible"/>
+                            android:visibility="visible" />
 
                     </LinearLayout>
                 </LinearLayout>

@@ -43,9 +43,8 @@
     <dimen name="right_margin_profile">2dp</dimen>
     <dimen name="signup_height">45dp</dimen>
     <dimen name="mm_height">110dp</dimen>
-
-
-
+    <dimen name="app_bar_height">230dp</dimen>
+    <dimen name="text_margin">16dp</dimen>
 
 
 </resources>

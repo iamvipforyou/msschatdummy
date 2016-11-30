@@ -1,0 +1,15 @@
+<resources>
+
+
+    <dimen name="logo_height">280dp</dimen>
+    <dimen name="profile_height">350dp</dimen>
+    <dimen name="emoji_height">420dp</dimen>
+    <dimen name="group_height">300dp</dimen>
+
+    <dimen name="emoji_broadcast_height">360dp</dimen>
+    <dimen name="add_icon_margin">10dp</dimen>
+    <dimen name="add_icon_size">70dp</dimen>
+    <dimen name="add_width">140dp</dimen>
+    <dimen name="message_layout_height">70dp</dimen>
+
+</resources>
