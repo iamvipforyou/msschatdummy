@@ -22,7 +22,6 @@ import com.mss.msschat.AppUtils.AppPreferences;
 import com.mss.msschat.AppUtils.Constants;
 import com.mss.msschat.AppUtils.Utils;
 import com.mss.msschat.Interfaces.ApiInterface;
-import com.mss.msschat.MainActivity;
 import com.mss.msschat.Models.RegistrationModel;
 import com.mss.msschat.Models.RegistrationResponse;
 import com.mss.msschat.Models.RegistrationResponseData;
@@ -30,12 +29,9 @@ import com.mss.msschat.NotificationUtils.RegistrationIntentService;
 import com.mss.msschat.R;
 import com.mss.msschat.Services.ContactFirstSyncIntentService;
 
-import java.math.BigInteger;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import me.zhanghai.android.patternlock.*;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -152,6 +148,7 @@ public class LoginActivity extends AppCompatActivity {
 
                             Intent mainIntent = new Intent(LoginActivity.this, SetPatternActivity.class);
                             startActivity(mainIntent);
+                            finish();
 
 
                         } else {

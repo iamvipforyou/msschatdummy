@@ -25,6 +25,9 @@ public class ContactsDto extends Dto {
     @Column(name = "userName", type = "TEXT")
     public String userName;
 
+
+    public boolean isSelected;
+
     public String getContactId() {
         return contactId;
     }
@@ -63,5 +66,14 @@ public class ContactsDto extends Dto {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean selected) {
+        isSelected = selected;
     }
 }

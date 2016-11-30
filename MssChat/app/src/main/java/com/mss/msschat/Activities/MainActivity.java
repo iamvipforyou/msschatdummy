@@ -1,15 +1,12 @@
-package com.mss.msschat;
+package com.mss.msschat.Activities;
 
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -25,6 +22,7 @@ import com.mss.msschat.AppUtils.Utils;
 import com.mss.msschat.Fragments.ContactChatFragment;
 import com.mss.msschat.Fragments.RecentChatFragment;
 import com.mss.msschat.NotificationUtils.RegistrationIntentService;
+import com.mss.msschat.R;
 
 import java.util.ArrayList;
 import java.util.List;

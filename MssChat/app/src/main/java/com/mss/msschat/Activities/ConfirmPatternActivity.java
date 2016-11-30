@@ -6,7 +6,6 @@ import android.text.TextUtils;
 
 import com.mss.msschat.AppUtils.AppPreferences;
 import com.mss.msschat.AppUtils.Constants;
-import com.mss.msschat.MainActivity;
 
 import java.util.List;
 

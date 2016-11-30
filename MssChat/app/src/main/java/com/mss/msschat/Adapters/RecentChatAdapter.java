@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
+import com.mss.msschat.Activities.AddGroupMembersActivity;
 import com.mss.msschat.Activities.ChatMessageActivity;
 import com.mss.msschat.Models.RecentChatModel;
 import com.mss.msschat.R;
@@ -30,11 +31,13 @@ public class RecentChatAdapter extends RecyclerView.Adapter<RecentChatAdapter.Vi
         this.mContext = context;
         this.recentChatModelArrayList = recentChatModelArrayList;
     }
+
     @Override
     public RecentChatAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemListView = LayoutInflater.from(parent.getContext()).inflate(R.layout.recent_chat_adapter, parent, false);
         return new ViewHolder(itemListView);
     }
+
     @Override
     public void onBindViewHolder(RecentChatAdapter.ViewHolder holder, int position) {
         RecentChatModel recentChatModel = recentChatModelArrayList.get(position);
@@ -43,16 +46,19 @@ public class RecentChatAdapter extends RecyclerView.Adapter<RecentChatAdapter.Vi
         GlideDrawableImageViewTarget imageViewTarget = new GlideDrawableImageViewTarget(holder.imgProfile);
         Glide.with(mContext).load("http://7606-presscdn-0-74.pagely.netdna-cdn.com/wp-content/uploads/2016/03/Dubai-Photos-Images-Travel-Tourist-Images-Pictures-800x600.jpg").into(imageViewTarget);
     }
+
     @Override
     public int getItemCount() {
         return recentChatModelArrayList.size();
     }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView txtName;
         TextView txtChatMessage;
         TextView txtDate;
         TextView txtBadge;
         ImageView imgCheckedBadge, imgProfile;
+
         public ViewHolder(View itemView) {
             super(itemView);
             txtName = (TextView) itemView.findViewById(R.id.txt_friend_name);
@@ -64,7 +70,7 @@ public class RecentChatAdapter extends RecyclerView.Adapter<RecentChatAdapter.Vi
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent chatMessageIntent = new Intent(mContext, ChatMessageActivity.class);
+                    Intent chatMessageIntent = new Intent(mContext, AddGroupMembersActivity.class);
                     mContext.startActivity(chatMessageIntent);
                 }
             });

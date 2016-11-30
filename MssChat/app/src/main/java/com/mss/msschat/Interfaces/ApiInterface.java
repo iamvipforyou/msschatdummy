@@ -1,6 +1,8 @@
 package com.mss.msschat.Interfaces;
 
 import com.mss.msschat.Models.ContactResponse;
+import com.mss.msschat.Models.CreateGroupModel;
+import com.mss.msschat.Models.CreateGroupResponse;
 import com.mss.msschat.Models.RegistrationModel;
 import com.mss.msschat.Models.RegistrationResponse;
 import com.mss.msschat.Models.VerifyContactsModel;
@@ -21,6 +23,9 @@ public interface ApiInterface {
 
     @POST("api/importContacts")
     Call<ContactResponse> getAllAppContactResponse(@Body VerifyContactsModel verifyContactsModel);
+
+    @POST("api/addGroup")
+    Call<CreateGroupResponse> getCreateGroupDetails(@Body CreateGroupModel createGroupModel);
 
 
 }
