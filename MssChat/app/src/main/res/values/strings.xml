@@ -13,4 +13,7 @@
     </plurals>
     <string name="message_user_left">%s left</string>
     <string name="user_action_typing">typing...</string>
+    <string name="title_activity_scrolling">ScrollingActivity</string>
+
+    <string name="action_settings">Settings</string>
 </resources>

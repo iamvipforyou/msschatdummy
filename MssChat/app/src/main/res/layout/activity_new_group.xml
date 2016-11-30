@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <include layout="@layout/custom_toolbar"></include>
+
+        <android.support.design.widget.CoordinatorLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/card_view3"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/text_size_small"
+                android:elevation="3dp"
+                card_view:cardCornerRadius="@dimen/card_album_radius">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+
+                    <!--............scroll............-->
+
+                    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+                        xmlns:app="http://schemas.android.com/apk/res-auto"
+                        xmlns:tools="http://schemas.android.com/tools"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:fillViewport="true"
+                        android:orientation="vertical"
+                        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+                        <android.support.design.widget.CoordinatorLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:orientation="vertical">
+
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="@dimen/group_height"
+                                    android:gravity="center"
+                                    android:orientation="horizontal">
+
+                                    <View
+                                        android:id="@+id/view"
+                                        android:layout_width="0dp"
+                                        android:layout_height="match_parent"
+                                        android:layout_weight="0.2"></View>
+
+
+                                    <LinearLayout
+                                        android:id="@+id/ll_profile"
+                                        android:layout_width="0dp"
+                                        android:layout_height="match_parent"
+                                        android:layout_weight="0.6"
+                                        android:layout_gravity="center">
+
+                                        <de.hdodenhof.circleimageview.CircleImageView
+                                            android:id="@+id/img_profile"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="match_parent"
+                                            android:layout_gravity="center"
+                                            android:scaleType="centerCrop"
+                                            android:src="@drawable/profile_img"></de.hdodenhof.circleimageview.CircleImageView>
+                                    </LinearLayout>
+
+
+                                    <View
+                                        android:layout_width="0dp"
+                                        android:layout_height="match_parent"
+                                        android:layout_weight="0.2"></View>
+                                </LinearLayout>
+
+
+                                <View
+                                    android:layout_width="match_parent"
+                                    android:layout_height="?android:attr/actionBarSize"
+                                    android:orientation="horizontal"></View>
+
+
+                                <android.support.v7.widget.CardView
+                                    android:id="@+id/card_view"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="?android:attr/actionBarSize"
+                                    android:layout_gravity="center"
+                                    android:layout_margin="@dimen/text_size_small"
+                                    android:elevation="3dp"
+                                    card_view:cardCornerRadius="@dimen/card_album_radius">
+
+                                    <LinearLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:orientation="horizontal">
+
+                                        <View
+                                            android:layout_width="0dp"
+                                            android:layout_height="match_parent"
+                                            android:layout_weight="0.05"></View>
+
+                                        <TextView
+                                            android:layout_width="0dp"
+                                            android:layout_height="match_parent"
+                                            android:layout_gravity="center"
+                                            android:layout_weight="0.25"
+                                            android:gravity="center|left"
+                                            android:text="Name"
+                                            android:textColor="@color/black"
+                                            android:textSize="@dimen/text_size_normal" />
+
+                                        <EditText
+                                            android:id="@+id/edit_grp_name"
+                                            android:layout_width="0dp"
+                                            android:layout_height="match_parent"
+                                            android:layout_weight="0.65"
+                                            android:background="@null"
+                                            android:gravity="center|left"
+                                            android:inputType="textPersonName"
+                                            android:text=""
+                                            android:textColor="@color/black"
+                                            android:textSize="@dimen/text_size_normal" />
+
+                                        <View
+                                            android:layout_width="0dp"
+                                            android:layout_height="match_parent"
+                                            android:layout_weight="0.05"></View>
+                                    </LinearLayout>
+                                </android.support.v7.widget.CardView>
+
+
+                                <RelativeLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:layout_marginBottom="@dimen/text_size_small"
+                                    android:gravity="bottom|center">
+
+                                    <LinearLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_alignParentBottom="true"
+                                        android:orientation="vertical">
+                                        <!--  <LinearLayout
+                                              android:layout_width="match_parent"
+                                              android:layout_height="wrap_content"
+                                              android:layout_alignParentBottom="true"
+                                              android:orientation="vertical">
+
+                                              <View
+                                                  android:layout_width="match_parent"
+                                                  android:layout_height="1px"
+                                                  android:background="@color/black"></View>
+
+                                              <Button
+                                                  android:id="@+id/btn_done"
+                                                  android:layout_width="match_parent"
+                                                  android:layout_height="wrap_content"
+                                                  android:background="@android:color/transparent"
+                                                  android:gravity="center"
+                                                  android:orientation="horizontal"
+                                                  android:text="Done"
+                                                  android:textColor="@color/app_color"
+                                                  android:textSize="@dimen/text_size_normal"
+                                                  android:textStyle="bold"></Button>
+
+                                          </LinearLayout>-->
+                                        <android.support.design.widget.FloatingActionButton
+                                            android:id="@+id/btn_signup"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_gravity="center|right"
+                                            android:src="@mipmap/arrow"
+                                            android:layout_marginRight="@dimen/text_size_small"
+                                            card_view:backgroundTint="@color/app_color"
+                                            card_view:fabSize="normal" />
+                                    </LinearLayout>
+                                </RelativeLayout>
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/ll_sel_pic"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                app:layout_anchor="@id/ll_profile"
+                                app:layout_anchorGravity="center|end">
+
+                                <ImageView
+                                    android:id="@+id/ll_pic"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:src="@mipmap/add_image" />
+                            </LinearLayout>
+                        </android.support.design.widget.CoordinatorLayout>
+
+
+                    </ScrollView>
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+        </android.support.design.widget.CoordinatorLayout>
+        <!--
+      -->
+
+    </LinearLayout>
+</LinearLayout>
