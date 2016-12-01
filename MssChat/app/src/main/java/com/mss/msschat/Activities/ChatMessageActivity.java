@@ -55,8 +55,7 @@ public class ChatMessageActivity extends AppCompatActivity {
     EditText editMsg;
     @Bind(R.id.ll_btn_send)
     LinearLayout llBtnSend;
-    @Bind(R.id.card_view)
-    CardView cardView;
+
     @Bind(R.id.m_table_menu)
     RelativeLayout mTableMenu;
     ChatMessageAdapter adapter;
@@ -68,9 +67,7 @@ public class ChatMessageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.chat_message_activity);
         ButterKnife.bind(this);
-
         initUI();
-
     }
 
     private void initUI() {

@@ -74,8 +74,8 @@
                                         android:id="@+id/ll_profile"
                                         android:layout_width="0dp"
                                         android:layout_height="match_parent"
-                                        android:layout_weight="0.6"
-                                        android:layout_gravity="center">
+                                        android:layout_gravity="center"
+                                        android:layout_weight="0.6">
 
                                         <de.hdodenhof.circleimageview.CircleImageView
                                             android:id="@+id/img_profile"
@@ -190,8 +190,8 @@
                                             android:layout_width="wrap_content"
                                             android:layout_height="wrap_content"
                                             android:layout_gravity="center|right"
-                                            android:src="@mipmap/arrow"
                                             android:layout_marginRight="@dimen/text_size_small"
+                                            android:src="@mipmap/arrow"
                                             card_view:backgroundTint="@color/app_color"
                                             card_view:fabSize="normal" />
                                     </LinearLayout>

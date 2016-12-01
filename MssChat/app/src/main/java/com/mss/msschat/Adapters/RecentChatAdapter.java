@@ -70,7 +70,7 @@ public class RecentChatAdapter extends RecyclerView.Adapter<RecentChatAdapter.Vi
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent chatMessageIntent = new Intent(mContext, AddGroupMembersActivity.class);
+                    Intent chatMessageIntent = new Intent(mContext, ChatMessageActivity.class);
                     mContext.startActivity(chatMessageIntent);
                 }
             });
