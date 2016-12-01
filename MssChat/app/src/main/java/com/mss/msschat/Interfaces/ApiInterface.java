@@ -1,5 +1,7 @@
 package com.mss.msschat.Interfaces;
 
+import com.mss.msschat.Models.AddMemberModel;
+import com.mss.msschat.Models.AddingMemberResponse.AddMemberResponse;
 import com.mss.msschat.Models.ContactResponse;
 import com.mss.msschat.Models.CreateGroupModel;
 import com.mss.msschat.Models.CreateGroupResponse;
@@ -26,6 +28,10 @@ public interface ApiInterface {
 
     @POST("api/addGroup")
     Call<CreateGroupResponse> getCreateGroupDetails(@Body CreateGroupModel createGroupModel);
+
+
+    @POST("api/addGroupUsers")
+    Call<AddMemberResponse> getAddSelectedMemberResponse(@Body AddMemberModel addMemberModel);
 
 
 }

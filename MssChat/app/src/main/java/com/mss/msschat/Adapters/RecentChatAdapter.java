@@ -13,10 +13,12 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 import com.mss.msschat.Activities.AddGroupMembersActivity;
 import com.mss.msschat.Activities.ChatMessageActivity;
+import com.mss.msschat.DataBase.Dto.RecentChatDto;
 import com.mss.msschat.Models.RecentChatModel;
 import com.mss.msschat.R;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by mss on 24/11/16.
@@ -24,10 +26,10 @@ import java.util.ArrayList;
 
 public class RecentChatAdapter extends RecyclerView.Adapter<RecentChatAdapter.ViewHolder> {
 
-    ArrayList<RecentChatModel> recentChatModelArrayList;
+    List<RecentChatDto> recentChatModelArrayList;
     Context mContext;
 
-    public RecentChatAdapter(Context context, ArrayList<RecentChatModel> recentChatModelArrayList) {
+    public RecentChatAdapter(Context context, List<RecentChatDto> recentChatModelArrayList) {
         this.mContext = context;
         this.recentChatModelArrayList = recentChatModelArrayList;
     }
@@ -40,11 +42,11 @@ public class RecentChatAdapter extends RecyclerView.Adapter<RecentChatAdapter.Vi
 
     @Override
     public void onBindViewHolder(RecentChatAdapter.ViewHolder holder, int position) {
-        RecentChatModel recentChatModel = recentChatModelArrayList.get(position);
+        RecentChatDto recentChatModel = recentChatModelArrayList.get(position);
         holder.txtName.setText(recentChatModel.getUserName());
-        holder.txtChatMessage.setText(recentChatModel.getContent());
+        holder.txtChatMessage.setText(recentChatModel.getMessage());
         GlideDrawableImageViewTarget imageViewTarget = new GlideDrawableImageViewTarget(holder.imgProfile);
-        Glide.with(mContext).load("http://7606-presscdn-0-74.pagely.netdna-cdn.com/wp-content/uploads/2016/03/Dubai-Photos-Images-Travel-Tourist-Images-Pictures-800x600.jpg").into(imageViewTarget);
+        Glide.with(mContext).load(recentChatModel.getProfileImage()).into(imageViewTarget);
     }
 
     @Override

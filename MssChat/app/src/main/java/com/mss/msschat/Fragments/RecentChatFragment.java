@@ -10,43 +10,51 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.mss.msschat.Adapters.RecentChatAdapter;
+import com.mss.msschat.AppUtils.Session;
+import com.mss.msschat.DataBase.Dao.RecentChatDao;
+import com.mss.msschat.DataBase.Dto.RecentChatDto;
+import com.mss.msschat.Interfaces.UpdateRecentChats;
 import com.mss.msschat.Models.RecentChatModel;
 import com.mss.msschat.R;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by mss on 23/11/16.
  */
 
-public class RecentChatFragment extends Fragment {
+public class RecentChatFragment extends Fragment implements UpdateRecentChats {
 
     View rootView;
     RecyclerView lvRecentChat;
     RecentChatAdapter adapter;
-    ArrayList<RecentChatModel> recentChatDataList;
+    List<RecentChatDto> recentChatDataList;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_recent_chat, container, false);
-        initUI(rootView);
+        initUI();
         return rootView;
     }
-    private void initUI(View rootView) {
+
+    private void initUI() {
         lvRecentChat = (RecyclerView) rootView.findViewById(R.id.lv_recent_chat);
+        Session.setUpdateRecentChats(this);
         populateUI();
     }
+
     private void populateUI() {
-        recentChatDataList = new ArrayList<RecentChatModel>();
-        for (int i = 0; i < 10; i++) {
-            RecentChatModel recentChatModel = new RecentChatModel();
-            recentChatModel.setUserName("John Smith");
-            recentChatModel.setTime("8998988");
-            recentChatModel.setContent("Hello I am here");
-            recentChatModel.setUserId("2345");
-            recentChatModel.setImageUrl("http");
-            recentChatDataList.add(recentChatModel);
-        }
+
+
+        recentChatDataList = new ArrayList<RecentChatDto>();
+
+
+        RecentChatDao recentChatDao = new RecentChatDao(getActivity());
+
+
+        recentChatDataList = recentChatDao.getAllRecentMessages();
+
 
         adapter = new RecentChatAdapter(getActivity(), recentChatDataList);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
@@ -58,6 +66,18 @@ public class RecentChatFragment extends Fragment {
     }
 
 
+    @Override
+    public void updateRecentChatList() {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+
+                initUI();
 
 
+            }
+        });
+
+
+    }
 }

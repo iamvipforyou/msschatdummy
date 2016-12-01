@@ -15,7 +15,8 @@ public class Constants {
     public static final class DataBaseParms {
 
         public static final String CONTACTS_TABLE = "contatcs";
-
+        public static final String MESSAGE_TABLE = "allMessages";
+        public static final String RECENT_CHAT_MESSAGES = "recentChatMessages";
 
     }
 }

@@ -13,6 +13,7 @@ import com.bumptech.glide.Glide;
 import com.mss.msschat.DataBase.Dto.ContactsDto;
 import com.mss.msschat.Interfaces.showSelectedMembersImage;
 import com.mss.msschat.R;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -52,8 +53,8 @@ public class AddMembersAdapter extends RecyclerView.Adapter<AddMembersAdapter.Vi
         holder.txtContactNumber.setText(contactsDto.getPhoneNumber());
 
         if (contactsDto.getUserPicture() != null) {
-          /*  Glide.with(mContext).load(contactsDto.getUserPicture()).into(holder.imgContactProfile);*/
-            holder.imgContactProfile.setImageResource(R.mipmap.ic_launcher);
+            Picasso.with(mContext).load(contactsDto.getUserPicture()).into(holder.imgContactProfile);
+            //  holder.imgContactProfile.setImageResource(R.mipmap.ic_launcher);
 
 
         } else {
@@ -67,7 +68,18 @@ public class AddMembersAdapter extends RecyclerView.Adapter<AddMembersAdapter.Vi
 
 
         } else {
-            holder.imgContactProfile.setImageResource(R.mipmap.ic_launcher);
+            //     holder.imgContactProfile.setImageResource(R.mipmap.ic_launcher);
+
+
+            if (contactsDto.getUserPicture() != null) {
+                Glide.with(mContext).load(contactsDto.getUserPicture()).into(holder.imgContactProfile);
+                //  holder.imgContactProfile.setImageResource(R.mipmap.ic_launcher);
+
+
+            } else {
+                holder.imgContactProfile.setImageResource(R.mipmap.ic_launcher);
+
+            }
 
 
         }

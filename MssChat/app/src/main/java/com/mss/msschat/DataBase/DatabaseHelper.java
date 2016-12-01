@@ -14,7 +14,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private boolean locked;
     private static final int DATABASE_VERSION = 1;
-    public static final String DATABASE_NAME = "plixdb";
+    public static final String DATABASE_NAME = "mssChat";
     private static StringBuilder CREATE_TABLE = new StringBuilder("CREATE TABLE ");
 
     public DatabaseHelper(Context context) {
@@ -34,6 +34,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         createTable(db, TableHelper.getAllContacts(), Constants.DataBaseParms.CONTACTS_TABLE);
 
+        createTable(db, TableHelper.getAllMessages(), Constants.DataBaseParms.MESSAGE_TABLE);
+
+        createTable(db, TableHelper.getAllRecentMessages(), Constants.DataBaseParms.RECENT_CHAT_MESSAGES);
     }
 
     private void createTable(SQLiteDatabase db, LinkedHashMap<String, String> fields, String tableName) {

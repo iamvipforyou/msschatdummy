@@ -33,7 +33,7 @@ public class ContactsDao extends Dao<ContactsDto> {
     @Override
     public void insert(ContactsDto dto) {
 
-        insertOrReplace(dto, "contactId", dto.contactId);
+        insertOrReplace(dto, "contactId", dto.getContactId());
     }
 
     @Override

@@ -13,7 +13,7 @@
 
         <LinearLayout
             android:id="@+id/llmain"
-            android:layout_width="match_parent"
+            android:layout_width="@dimen/adapter_image_height"
             android:layout_height="@dimen/adapter_image_height"
             android:orientation="horizontal">
 
@@ -22,7 +22,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
-                android:layout_weight="0.8"
+
                 android:scaleType="centerCrop"
                 android:src="@mipmap/ic_launcher"></de.hdodenhof.circleimageview.CircleImageView>
 

@@ -1,44 +1,32 @@
 package com.mss.msschat.DataBase.Dto;
 
 /**
- * Created by mss on 30/11/16.
+ * Created by mss on 1/12/16.
  */
 
-public class MessageDto extends Dto {
+public class RecentChatDto extends Dto {
 
-
-    public static final long SerializableLONG = 1L;
-
-    @Column(name = "messageId",type = "TEXT")
-    String messageId;
-
-
-    @Column(name = "userName",type = "TEXT")
+    @Column(name = "rUserName", type = "TEXT")
     String userName;
 
-    @Column(name = "message",type = "TEXT")
-      String message;
+    @Column(name = "rMessage", type = "TEXT")
+    String message;
 
-    @Column(name = "senderId",type = "TEXT")
+    @Column(name = "rSenderId", type = "TEXT")
     String senderId;
 
-    @Column(name = "sideFrom",type = "TEXT")
+    @Column(name = "rFrom", type = "TEXT")
     String from;
 
-    @Column(name = "dateTime",type = "TEXT")
+    @Column(name = "rDateTime", type = "TEXT")
     String dateTime;
 
-    @Column(name = "typeMessage",type = "TEXT")
+    @Column(name = "rTypeMessage", type = "TEXT")
     String typeMessage;
 
 
-    public String getMessageId() {
-        return messageId;
-    }
-
-    public void setMessageId(String messageId) {
-        this.messageId = messageId;
-    }
+    @Column(name = "rImage", type = "TEXT")
+    String profileImage;
 
     public String getUserName() {
         return userName;
@@ -86,5 +74,14 @@ public class MessageDto extends Dto {
 
     public void setTypeMessage(String typeMessage) {
         this.typeMessage = typeMessage;
+    }
+
+
+    public String getProfileImage() {
+        return profileImage;
+    }
+
+    public void setProfileImage(String profileImage) {
+        this.profileImage = profileImage;
     }
 }

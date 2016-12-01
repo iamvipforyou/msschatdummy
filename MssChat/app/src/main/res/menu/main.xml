@@ -24,7 +24,7 @@
 
     <item
         android:id="@+id/action_group"
-        android:title="Add Group"
+        android:title="New Group"
         app:showAsAction="never"
         />
 
