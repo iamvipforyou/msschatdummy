@@ -67,9 +67,7 @@ public class AddGroupMembersActivity extends AppCompatActivity implements showSe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_member_activity);
         ButterKnife.bind(this);
-
         initUI();
-
     }
 
     private void initUI() {
