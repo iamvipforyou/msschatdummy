@@ -81,7 +81,7 @@ public class AddGroupMembersActivity extends AppCompatActivity implements showSe
 
     String groupId;
 
-    List<Long> selectedUserArray;
+    List<String> selectedUserArray;
     public ViewGroup viewGroup;
 
     @Override
@@ -99,6 +99,7 @@ public class AddGroupMembersActivity extends AppCompatActivity implements showSe
     }
 
     private void populateUI() {
+        Utils.setClassTitle(AddGroupMembersActivity.this, "Add Member", toolbar);
         try {
 
             Intent dataIntent = getIntent();
@@ -129,7 +130,7 @@ public class AddGroupMembersActivity extends AppCompatActivity implements showSe
         llContactImages.removeAllViews();
         selectedMembers = ((AddMembersAdapter) adapter).allSelectedMembers();
         count = selectedMembers.size();
-        selectedUserArray = new ArrayList<Long>();
+        selectedUserArray = new ArrayList<String>();
         for (int i = 0; i < selectedMembers.size(); i++) {
             ContactsDto contactsDto = selectedMembers.get(i);
             if (contactsDto.isSelected()) {
@@ -163,7 +164,7 @@ public class AddGroupMembersActivity extends AppCompatActivity implements showSe
                 }
 
 
-                selectedUserArray.add(Long.parseLong(contactsDto.getPhoneNumber()));
+                selectedUserArray.add(contactsDto.getPhoneNumber());
 
 
             }

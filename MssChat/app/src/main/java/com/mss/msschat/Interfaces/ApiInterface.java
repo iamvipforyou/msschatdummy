@@ -5,13 +5,18 @@ import com.mss.msschat.Models.AddingMemberResponse.AddMemberResponse;
 import com.mss.msschat.Models.ContactResponse;
 import com.mss.msschat.Models.CreateGroupModel;
 import com.mss.msschat.Models.CreateGroupResponse;
+import com.mss.msschat.Models.DeleteGroupModel;
+import com.mss.msschat.Models.DeleteGroupResponse;
+import com.mss.msschat.Models.GroupUserResponse.GroupUsersResponse;
 import com.mss.msschat.Models.RegistrationModel;
 import com.mss.msschat.Models.RegistrationResponse;
 import com.mss.msschat.Models.VerifyContactsModel;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 
 /**
  * Created by mss on 25/11/16.
@@ -32,6 +37,12 @@ public interface ApiInterface {
 
     @POST("api/addGroupUsers")
     Call<AddMemberResponse> getAddSelectedMemberResponse(@Body AddMemberModel addMemberModel);
+
+    @GET("api/listGroupUsers/{groupId}")
+    Call<GroupUsersResponse> getAllGroupUsers(@Path("groupId") String GroupId);
+
+    @POST("api/deleteGroup")
+    Call<DeleteGroupResponse> deleteGroupFromServer(@Body DeleteGroupModel deleteGroupModel);
 
 
 }

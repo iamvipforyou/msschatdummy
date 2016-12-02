@@ -105,4 +105,29 @@ public class RecentChatDao extends Dao<RecentChatDto> {
     }
 
 
+    public List<RecentChatDto> getRecentListFriendId(String friendId) {
+        List<RecentChatDto> messageList = new ArrayList<RecentChatDto>();
+        try {
+            String sql = "select  * from  recentChatMessages  where rSenderId = '" + friendId + "' ;";
+            DatabaseHelper dbHelper = new DatabaseHelper(mContext);
+            Cursor cursor = dbHelper.getReadableDatabase().rawQuery(sql, null);
+            while (cursor.moveToNext()) {
+                try {
+                    RecentChatDto dto = buildDto(cursor);
+                    if (dto != null) {
+                        messageList.add(dto);
+                    }
+                } catch (Exception e) {
+                    Log.e(sql, "field not found", e);
+                }
+            }
+            cursor.close();
+            dbHelper.close();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return messageList;
+    }
+
+
 }

@@ -3,11 +3,10 @@ package com.mss.msschat.Models;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class AddMemberModel {
+public class RemoveGrpUserModel {
 
     @SerializedName("adminId")
     @Expose

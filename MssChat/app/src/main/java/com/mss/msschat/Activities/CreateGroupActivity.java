@@ -116,6 +116,8 @@ public class CreateGroupActivity extends AppCompatActivity {
     }
 
     private void populateUI() {
+
+        Utils.setClassTitle(CreateGroupActivity.this, "New Group", toolbar);
         viewGroup = (ViewGroup) ((ViewGroup) this.findViewById(android.R.id.content)).getChildAt(0);
     }
 
@@ -213,7 +215,7 @@ public class CreateGroupActivity extends AppCompatActivity {
                 if (validation()) {
 
                     createGroupOnServer();
-                    //      startActivity(new Intent(CreateGroupActivity.this, ScrollingActivity.class));
+                    //      startActivity(new Intent(CreateGroupActivity.this, GroupDetailsActivity.class));
                 }
                 break;
             case R.id.ll_pic:

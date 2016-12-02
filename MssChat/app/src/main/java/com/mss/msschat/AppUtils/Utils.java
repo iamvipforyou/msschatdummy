@@ -127,6 +127,17 @@ public class Utils {
     }
 
 
+    public static void setClassTitle(Activity activity, String Title, Toolbar toolbar) {
+        //  Toolbar toolbar = ((MainActivity) activity).mToolBar;
+        AppCompatActivity Appactivity = (AppCompatActivity) activity;
+        Appactivity.setSupportActionBar(toolbar);
+        Appactivity.getSupportActionBar().setDisplayShowTitleEnabled(false);
+        TextView mTitle = (TextView) toolbar.findViewById(R.id.toolbar_title);
+        mTitle.setText(Title);
+        mTitle.setGravity(Gravity.CENTER);
+    }
+
+
     public static String GetCountryZipCode(String ssid) {
         Locale loc = new Locale("", ssid);
         return loc.getDisplayCountry().trim();

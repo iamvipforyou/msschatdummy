@@ -13,6 +13,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 import com.mss.msschat.Activities.AddGroupMembersActivity;
 import com.mss.msschat.Activities.ChatMessageActivity;
+import com.mss.msschat.AppUtils.Utils;
 import com.mss.msschat.DataBase.Dto.RecentChatDto;
 import com.mss.msschat.Models.RecentChatModel;
 import com.mss.msschat.R;
@@ -47,6 +48,8 @@ public class RecentChatAdapter extends RecyclerView.Adapter<RecentChatAdapter.Vi
         holder.txtChatMessage.setText(recentChatModel.getMessage());
         GlideDrawableImageViewTarget imageViewTarget = new GlideDrawableImageViewTarget(holder.imgProfile);
         Glide.with(mContext).load(recentChatModel.getProfileImage()).into(imageViewTarget);
+        holder.txtDate.setText(Utils.getTimeAgo(Long.parseLong(recentChatModel.getDateTime())));
+
     }
 
     @Override
@@ -72,7 +75,12 @@ public class RecentChatAdapter extends RecyclerView.Adapter<RecentChatAdapter.Vi
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+
+                    RecentChatDto recentChatDto = recentChatModelArrayList.get(getPosition());
+
+
                     Intent chatMessageIntent = new Intent(mContext, ChatMessageActivity.class);
+                    chatMessageIntent.putExtra("id", recentChatDto.getSenderId());
                     mContext.startActivity(chatMessageIntent);
                 }
             });
