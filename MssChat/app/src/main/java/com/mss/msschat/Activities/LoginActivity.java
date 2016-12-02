@@ -33,6 +33,7 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import com.mss.msschat.AppUtils.ApiClient;
 import com.mss.msschat.AppUtils.AppPreferences;
 import com.mss.msschat.AppUtils.Constants;
+import com.mss.msschat.AppUtils.UserPicture;
 import com.mss.msschat.AppUtils.Utils;
 import com.mss.msschat.Interfaces.ApiInterface;
 import com.mss.msschat.Models.RegistrationModel;
@@ -41,11 +42,7 @@ import com.mss.msschat.Models.RegistrationResponseData;
 import com.mss.msschat.NotificationUtils.RegistrationIntentService;
 import com.mss.msschat.R;
 import com.mss.msschat.Services.ContactFirstSyncIntentService;
-import com.mss.msschat.AppUtils.UserPicture;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 import java.io.ByteArrayOutputStream;
 
 import butterknife.Bind;
@@ -97,6 +94,10 @@ public class LoginActivity extends AppCompatActivity {
     CircleImageView imgProfile;
     @Bind(R.id.ll_profile)
     LinearLayout llProfile;
+    @Bind(R.id.ll_pic)
+    ImageView llPic;
+    @Bind(R.id.ll_sel_pic)
+    LinearLayout llSelPic;
     private LinearLayout llTakePic;
     private LinearLayout llChoosePic;
     private Bitmap imgBitmap;
@@ -109,12 +110,11 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
         intUI();
-
     }
 
     private void intUI() {
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         Utils.setStatusBarColor(LoginActivity.this);
-        //   Utils.setTitle(LoginActivity.this, "Sign Up");
         if (checkPlayServices()) {
             Intent intent = new Intent(this, RegistrationIntentService.class);
             startService(intent);
@@ -236,7 +236,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-    @OnClick({R.id.btn_signup, R.id.img_profile})
+    @OnClick({R.id.btn_signup, R.id.img_profile, R.id.ll_sel_pic})
     public void onClick(View view) {
 
         switch (view.getId()) {
@@ -250,7 +250,9 @@ public class LoginActivity extends AppCompatActivity {
             case R.id.img_profile:
                 selectProfile();
                 break;
-
+            case R.id.ll_sel_pic:
+                selectProfile();
+                break;
         }
     }
 
@@ -315,16 +317,28 @@ public class LoginActivity extends AppCompatActivity {
                 try {
                     imgBitmap = (Bitmap) data.getExtras().get("data");
                     Uri temUri = getImageUri(LoginActivity.this, imgBitmap);
-                    imgProfile.setImageBitmap(new UserPicture(temUri, getContentResolver()).getBitmap());
-                    userImage = "data:image/png;base64," + BitMapToString(new UserPicture(temUri, getContentResolver()).getBitmap());
+                    Intent updateIntent = new Intent(this, ProfileCropViewActivity.class);
+                    updateIntent.setData(temUri);
+                    startActivityForResult(updateIntent, 1);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             } else if (requestCode == 3) {
                 try {
-                    Uri selectedImageUri = data.getData();
-                    imgProfile.setImageBitmap(new UserPicture(selectedImageUri, getContentResolver()).getBitmap());
-                    userImage = "data:image/png;base64," + BitMapToString(new UserPicture(selectedImageUri, getContentResolver()).getBitmap());
+                    Intent updateIntent = new Intent(this, ProfileCropViewActivity.class);
+                    updateIntent.setData(data.getData());
+                    startActivityForResult(updateIntent, 1);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } else if (requestCode == 1) {
+                try {
+                    if (resultCode == RESULT_OK) {
+                        Uri selectedImageUri = data.getData();
+                        imgBitmap = new UserPicture(selectedImageUri, getContentResolver()).getBitmap();
+                        imgProfile.setImageBitmap(new UserPicture(selectedImageUri, getContentResolver()).getBitmap());
+                        userImage = "data:image/png;base64," + BitMapToString(new UserPicture(selectedImageUri, getContentResolver()).getBitmap());
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

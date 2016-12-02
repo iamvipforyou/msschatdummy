@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                                                 xmlns:app="http://schemas.android.com/apk/res-auto"
-                                                 android:id="@+id/main_content"
-                                                 android:layout_width="match_parent"
-                                                 android:layout_height="match_parent"
-                                                 android:background="@android:color/white"
-                                                 android:fitsSystemWindows="true">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:fitsSystemWindows="true">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/detail_backdrop_height"
+        android:layout_height="@dimen/app_bar_height"
         android:background="@color/app_color"
         android:fitsSystemWindows="true"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
@@ -26,14 +26,12 @@
             app:expandedTitleTextAppearance="@android:color/transparent"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
-
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 app:layout_collapseMode="pin"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
-
 
                 <TextView
                     android:id="@+id/toolbar_title"
@@ -43,7 +41,7 @@
                     android:layout_gravity="center|left"
                     android:text="MssChat"
                     android:textColor="@android:color/white"
-                    android:textSize="16sp"/>
+                    android:textSize="16sp" />
 
 
             </android.support.v7.widget.Toolbar>
@@ -62,16 +60,11 @@
                     app:tabGravity="fill"
                     app:tabIndicatorColor="@color/white"
                     app:tabMode="fixed"
-                    app:tabSelectedTextColor="@color/white"/>
-
+                    app:tabSelectedTextColor="@color/white" />
 
             </RelativeLayout>
-
-
         </android.support.design.widget.CollapsingToolbarLayout>
-
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_main"/>
-
+    <include layout="@layout/content_main" />
 </android.support.design.widget.CoordinatorLayout>

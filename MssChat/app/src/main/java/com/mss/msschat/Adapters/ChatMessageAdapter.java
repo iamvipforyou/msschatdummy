@@ -93,7 +93,6 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
             llSenderImage = (LinearLayout) itemView.findViewById(R.id.ll_img_senderchat_msg);
             iVSender = (ImageView) itemView.findViewById(R.id.img_sender_chat);
             llSenderText = (LinearLayout) itemView.findViewById(R.id.ll_sende_chart_txt);
-            txtGrpUserName = (TextView) itemView.findViewById(R.id.txt_grp_username);
 
 
         }

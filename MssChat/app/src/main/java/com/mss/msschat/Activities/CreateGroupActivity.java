@@ -111,12 +111,12 @@ public class CreateGroupActivity extends AppCompatActivity {
     }
 
     private void initUI() {
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         populateUI();
     }
 
     private void populateUI() {
         viewGroup = (ViewGroup) ((ViewGroup) this.findViewById(android.R.id.content)).getChildAt(0);
-
     }
 
 

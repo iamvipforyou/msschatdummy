@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:card_view="http://schemas.android.com/apk/res-auto"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:orientation="horizontal"
-              android:padding="8dp">
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="2dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -25,97 +25,66 @@
                 android:visibility="visible">
 
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="200dp"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_weight="0.15"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:visibility="gone">
-
-                    <de.hdodenhof.circleimageview.CircleImageView
-                        android:id="@+id/img_receiver_pic"
-                        android:layout_width="match_parent"
-                        android:layout_height="40dp"
-                        android:layout_gravity="center"
-                        android:layout_weight="0.5"
-                        android:scaleType="centerCrop"
-                        android:src="@color/app_color"></de.hdodenhof.circleimageview.CircleImageView>
-
-
-                </LinearLayout>
-
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.03"
-                    android:visibility="gone"></View>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.8"
                     android:orientation="vertical">
 
+                    <LinearLayout
+                        android:id="@+id/ll_txt_chat_msg"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bubble1"
+                        android:orientation="horizontal"
+                        android:paddingLeft="@dimen/text_size_small"
+                        android:paddingRight="@dimen/text_size_small">
 
-                    <android.support.v7.widget.CardView
-                        android:id="@+id/card_view_rec"
-                        android:layout_width="200dp"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center|left"
-                        android:layout_margin="2dp"
-                        android:elevation="3dp"
-                        card_view:cardBackgroundColor="@color/colorAccent"
-                        card_view:cardCornerRadius="@dimen/card_album_radius">
 
-                        <LinearLayout
-                            android:id="@+id/ll_txt_chat_msg"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:padding="3dp">
+                        <FrameLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
 
                             <LinearLayout
-                                android:layout_width="wrap_content"
+                                android:id="@+id/ll_msg_from"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:orientation="vertical"
-                                android:padding="5dp">
+                                android:paddingBottom="@dimen/text_size_middle">
 
                                 <TextView
                                     android:id="@+id/txt_msg"
                                     android:layout_width="wrap_content"
                                     android:layout_height="match_parent"
-                                    android:text="abc"
-                                    android:textColor="@color/white"
-                                    android:textSize="@dimen/text_size_normal"></TextView>
+                                    android:layout_marginLeft="@dimen/text_size_very_small"
+                                    android:text="Adding HTML non-breaking spaces did the trick. Tested the code on most devices and working absolutely fine. Maybe whatsapp is also doing the same thing"
+                                    android:textColor="@color/black"
+                                    android:textSize="@dimen/text_size_midnormal"></TextView>
 
                             </LinearLayout>
 
                             <LinearLayout
-                                android:layout_width="wrap_content"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_gravity="right"
+                                android:layout_below="@+id/ll_msg_from"
+                                android:layout_gravity="right|bottom"
                                 android:gravity="right"
-                                android:orientation="vertical"
-                                android:padding="5dp">
+                                android:orientation="vertical">
 
                                 <TextView
                                     android:id="@+id/txt_receiver_time"
-                                    android:layout_width="wrap_content"
+                                    android:layout_width="match_parent"
                                     android:layout_height="match_parent"
-                                    android:gravity="right"
+                                    android:layout_marginLeft="@dimen/text_size_normal"
+                                    android:gravity="right|top"
                                     android:singleLine="true"
-                                    android:text="20 may "
-                                    android:textColor="@color/white"
+                                    android:text="20 may"
+                                    android:textColor="@color/black"
                                     android:textSize="@dimen/text_size_small"
                                     android:textStyle="italic"></TextView>
-
-
                             </LinearLayout>
+                        </FrameLayout>
 
 
-                        </LinearLayout>
-                    </android.support.v7.widget.CardView>
+                    </LinearLayout>
 
                     <android.support.v7.widget.CardView
                         android:id="@+id/card_view_recimg"
@@ -140,7 +109,7 @@
                                 android:id="@+id/img_chat"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:src="@mipmap/ic_launcher"/>
+                                android:src="@mipmap/ic_launcher" />
                         </LinearLayout>
 
                     </android.support.v7.widget.CardView>
@@ -154,103 +123,72 @@
             android:id="@+id/ll_sender"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:gravity="right"
             android:orientation="horizontal"
             android:visibility="visible">
 
             <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                          android:layout_width="0dp"
-                          android:layout_height="wrap_content"
-                          android:layout_weight="0.8"
-                          android:orientation="vertical">
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-                <android.support.v7.widget.CardView
-                    android:id="@+id/card_view_sender"
-                    android:layout_width="200dp"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center|right"
-                    android:layout_margin="2dp"
-                    android:elevation="3dp"
-                    card_view:cardBackgroundColor="@color/colorPrimaryDark"
-                    card_view:cardCornerRadius="@dimen/card_album_radius">
 
-                    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                                  android:id="@+id/ll_sende_chart_txt"
-                                  android:layout_width="match_parent"
-                                  android:layout_height="wrap_content"
-                                  android:layout_gravity="right"
-                                  android:orientation="vertical"
-                                  android:padding="3dp">
+                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:id="@+id/ll_sende_chart_txt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:background="@drawable/bubble2"
+                    android:orientation="vertical"
+                    android:paddingLeft="@dimen/text_size_small"
+                    android:paddingRight="@dimen/text_size_small">
+
+                    <FrameLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
 
                         <LinearLayout
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="right"
                             android:orientation="vertical"
-                            android:padding="5dp">
+                            android:paddingBottom="@dimen/text_size_middle">
 
                             <TextView
                                 android:id="@+id/txt_sender_msg"
                                 android:layout_width="wrap_content"
                                 android:layout_height="match_parent"
-                                android:text="abc"
-                                android:textColor="@color/white"
+                                android:layout_marginRight="@dimen/text_size_very_small"
+                                android:text="Adding HTML non-breaking spaces did the trick."
+                                android:textColor="@color/black"
                                 android:textSize="@dimen/text_size_midnormal"></TextView>
-
 
                         </LinearLayout>
 
                         <LinearLayout
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:padding="5dp">
+                            android:layout_gravity="right|bottom"
+                            android:layout_marginRight="@dimen/text_size_normal"
+                            android:gravity="right"
+                            android:orientation="vertical">
 
-                            <LinearLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="match_parent"
-                                android:layout_gravity="left"
-                                android:gravity="left"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:id="@+id/txt_grp_username"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:layout_gravity="left"
-                                    android:gravity="left"
-                                    android:singleLine="true"
-                                    android:text=""
-                                    android:textColor="@color/white"
-                                    android:textSize="@dimen/text_size_small"
-                                    android:textStyle="italic"
-                                    android:visibility="gone"></TextView>
-
-                            </LinearLayout>
-
-                            <LinearLayout
+                            <TextView
+                                android:id="@+id/txt_sender_time"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:layout_gravity="right"
-                                android:gravity="right"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:id="@+id/txt_sender_time"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:gravity="right"
-                                    android:singleLine="true"
-                                    android:text="20 may "
-                                    android:textColor="@color/white"
-                                    android:textSize="@dimen/text_size_small"
-                                    android:textStyle="italic"></TextView>
-                            </LinearLayout>
-
+                                android:gravity="right|top"
+                                android:singleLine="true"
+                                android:text="20 may"
+                                android:textColor="@color/black"
+                                android:textSize="@dimen/text_size_small"
+                                android:textStyle="italic"></TextView>
                         </LinearLayout>
 
-                    </LinearLayout>
+                    </FrameLayout>
+                </LinearLayout>
 
-                </android.support.v7.widget.CardView>
 
                 <android.support.v7.widget.CardView
                     android:id="@+id/card_view_senderimg"
@@ -275,7 +213,7 @@
                             android:id="@+id/img_sender_chat"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
-                            android:src="@mipmap/ic_launcher"/>
+                            android:src="@mipmap/ic_launcher" />
 
 
                     </LinearLayout>

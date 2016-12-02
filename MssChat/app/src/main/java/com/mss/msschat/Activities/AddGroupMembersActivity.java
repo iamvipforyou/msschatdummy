@@ -114,40 +114,30 @@ public class AddGroupMembersActivity extends AppCompatActivity implements showSe
         llContactImages.setVisibility(View.GONE);
         cardView.setVisibility(View.GONE);
         contactsDao = new ContactsDao(AddGroupMembersActivity.this);
-
         allUserFromContactList = contactsDao.getAllAppContacts();
         adapter = new AddMembersAdapter(getApplicationContext(), allUserFromContactList, this);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         lvContacts.setLayoutManager(layoutManager);
         lvContacts.setItemAnimator(new DefaultItemAnimator());
         lvContacts.setAdapter(adapter);
-
-
     }
 
 
     @Override
     public void getSelectedMembers() {
-
         selectedMembers = new ArrayList<ContactsDto>();
         llContactImages.removeAllViews();
         selectedMembers = ((AddMembersAdapter) adapter).allSelectedMembers();
-
         count = selectedMembers.size();
         selectedUserArray = new ArrayList<Long>();
         for (int i = 0; i < selectedMembers.size(); i++) {
-
             ContactsDto contactsDto = selectedMembers.get(i);
-
-
             if (contactsDto.isSelected()) {
                 cardView.setVisibility(View.VISIBLE);
                 llContactImages.setVisibility(View.VISIBLE);
-
                 LinearLayout.LayoutParams viewOrdersParams;
                 viewOrdersParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                 View displayOrdersView = getLayoutInflater().inflate(R.layout.add_member_image, llContactImages, false);
-
                 ImageView img = (ImageView) displayOrdersView.findViewById(R.id.img_contact_profile);
 
                 //   Glide.with(getApplicationContext()).load(contactsDto.getUserPicture()).into(img);
@@ -167,7 +157,6 @@ public class AddGroupMembersActivity extends AppCompatActivity implements showSe
 
 
                 displayOrdersView.setLayoutParams(viewOrdersParams);
-
                 llContactImages.addView(displayOrdersView);
                 if (count > 0) {
                     count--;
@@ -182,13 +171,8 @@ public class AddGroupMembersActivity extends AppCompatActivity implements showSe
             if (count == selectedMembers.size()) {
                 cardView.setVisibility(View.GONE);
                 llContactImages.setVisibility(View.GONE);
-
             }
-
-
         }
-
-
     }
 
     @OnClick(R.id.btn_done)
