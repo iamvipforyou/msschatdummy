@@ -94,6 +94,7 @@
                         android:layout_margin="2dp"
                         android:layout_marginTop="2dp"
                         android:elevation="3dp"
+                        android:visibility="gone"
                         card_view:cardCornerRadius="@dimen/card_album_radius">
 
                         <LinearLayout
@@ -196,6 +197,7 @@
                     android:layout_height="match_parent"
                     android:layout_gravity="center|right"
                     android:layout_margin="2dp"
+                  android:visibility="gone"
                     android:elevation="3dp"
                     card_view:cardCornerRadius="@dimen/card_album_radius">
 

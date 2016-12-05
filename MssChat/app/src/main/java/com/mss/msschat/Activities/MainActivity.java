@@ -15,14 +15,19 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.mss.msschat.AppUtils.Connectivity;
 import com.mss.msschat.AppUtils.Utils;
+import com.mss.msschat.DataBase.Dao.ContactsDao;
 import com.mss.msschat.Fragments.ContactChatFragment;
 import com.mss.msschat.Fragments.RecentChatFragment;
 import com.mss.msschat.NotificationUtils.RegistrationIntentService;
 import com.mss.msschat.R;
+import com.mss.msschat.Services.ContactFirstSyncIntentService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     public Toolbar mToolBar;
     private SearchView searchView = null;
     private SearchView.OnQueryTextListener queryTextListener;
+    private ViewGroup viewGroup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +57,8 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         setupViewPager(viewPager);
         tabLayout.setupWithViewPager(viewPager);
+
+        viewGroup = (ViewGroup) ((ViewGroup) this.findViewById(android.R.id.content)).getChildAt(0);
         if (checkPlayServices()) {
             Intent intent = new Intent(this, RegistrationIntentService.class);
             startService(intent);
@@ -146,10 +154,22 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_search:
-                // Not implemented here
+
                 return false;
             case R.id.action_group:
                 startActivity(new Intent(MainActivity.this, CreateGroupActivity.class));
+                break;
+
+            case R.id.action_setting:
+                //   Toast.makeText(this, "hello", Toast.LENGTH_SHORT).show();
+                if (Connectivity.isConnected(MainActivity.this)) {
+                    ContactsDao contactsDao = new ContactsDao(MainActivity.this);
+                    contactsDao.clearTable(MainActivity.this);
+
+                    startService(new Intent(MainActivity.this, ContactFirstSyncIntentService.class));
+                } else {
+                    Utils.showErrorOnTop(viewGroup, "No Internet Connectivity !!");
+                }
                 break;
 
             default:

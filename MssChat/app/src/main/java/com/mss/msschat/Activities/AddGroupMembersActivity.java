@@ -89,6 +89,7 @@ public class AddGroupMembersActivity extends AppCompatActivity implements showSe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_member_activity);
         ButterKnife.bind(this);
+
         initUI();
     }
 
@@ -220,6 +221,9 @@ public class AddGroupMembersActivity extends AppCompatActivity implements showSe
                             Utils.showErrorOnTop(viewGroup, "Members Added Successfully !!");
 
                             finish();
+                        } else {
+
+                            Utils.showErrorOnTop(viewGroup, addMemberResponse.getResponseMessage());
                         }
 
 

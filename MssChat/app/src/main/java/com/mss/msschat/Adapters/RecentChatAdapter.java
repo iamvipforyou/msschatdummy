@@ -47,7 +47,12 @@ public class RecentChatAdapter extends RecyclerView.Adapter<RecentChatAdapter.Vi
         holder.txtName.setText(recentChatModel.getUserName());
         holder.txtChatMessage.setText(recentChatModel.getMessage());
         GlideDrawableImageViewTarget imageViewTarget = new GlideDrawableImageViewTarget(holder.imgProfile);
-        Glide.with(mContext).load(recentChatModel.getProfileImage()).into(imageViewTarget);
+
+        if (recentChatModel.getProfileImage() != null) {
+            Glide.with(mContext).load(recentChatModel.getProfileImage()).into(imageViewTarget);
+        } else {
+            Glide.with(mContext).load(R.mipmap.ic_launcher).into(imageViewTarget);
+        }
         holder.txtDate.setText(Utils.getTimeAgo(Long.parseLong(recentChatModel.getDateTime())));
 
     }
@@ -80,7 +85,10 @@ public class RecentChatAdapter extends RecyclerView.Adapter<RecentChatAdapter.Vi
 
 
                     Intent chatMessageIntent = new Intent(mContext, ChatMessageActivity.class);
+                    chatMessageIntent.putExtra("intentFrom", "recent");
                     chatMessageIntent.putExtra("id", recentChatDto.getSenderId());
+                    chatMessageIntent.putExtra("user_image", recentChatDto.getProfileImage());
+                    chatMessageIntent.putExtra("typeMessage", recentChatDto.getTypeMessage());
                     mContext.startActivity(chatMessageIntent);
                 }
             });

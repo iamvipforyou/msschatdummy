@@ -13,13 +13,7 @@
         />
 
 
-    <item
-        android:id="@+id/action_mesage"
-        android:icon="@mipmap/ic_message_white_24dp"
-        android:orderInCategory="100"
-        android:title=""
-        app:showAsAction="ifRoom"
-        />
+
 
 
     <item
@@ -31,7 +25,7 @@
 
     <item
         android:id="@+id/action_setting"
-        android:title="Setting"
+        android:title="Refresh Contatcs"
         app:showAsAction="never"
         />
 

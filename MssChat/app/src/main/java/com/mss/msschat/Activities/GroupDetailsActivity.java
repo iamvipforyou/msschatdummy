@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -34,6 +35,8 @@ import com.mss.msschat.Models.GroupUserResponse.GroupUserResponseData;
 import com.mss.msschat.Models.GroupUserResponse.GroupUsersResponse;
 import com.mss.msschat.Models.GroupUserResponse.Success;
 import com.mss.msschat.Models.GroupUserResponse.User;
+import com.mss.msschat.Models.RemoveGroupUserResponse.RemoveGroupUserResponse;
+import com.mss.msschat.Models.RemoveGrpUserModel;
 import com.mss.msschat.R;
 import com.squareup.picasso.Picasso;
 
@@ -66,6 +69,7 @@ public class GroupDetailsActivity extends AppCompatActivity {
     List<RecentChatDto> userOrGroupDetails;
     List<User> listAllGrpUser;
     String senderOrUser;
+    private ViewGroup viewGroup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,7 +92,7 @@ public class GroupDetailsActivity extends AppCompatActivity {
 
     private void populateUi() {
         Utils.setStatusBarColor(GroupDetailsActivity.this);
-
+        viewGroup = (ViewGroup) ((ViewGroup) this.findViewById(android.R.id.content)).getChildAt(0);
         try {
             Intent dataIntent = getIntent();
 
@@ -113,7 +117,7 @@ public class GroupDetailsActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                showDeleteGroupDialog();
             }
         });
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -175,6 +179,9 @@ public class GroupDetailsActivity extends AppCompatActivity {
                             getParticipants(listAllGrpUser);
 
                         } else {
+
+
+                            Utils.showErrorOnTop(viewGroup, responseData.getResponseMessage());
 
 
                         }
@@ -254,7 +261,7 @@ public class GroupDetailsActivity extends AppCompatActivity {
 
         if (id == R.id.action_settings) {
 
-            showDeleteGroupDialog();
+               showDeleteGroupDialog();
 
 
         }
@@ -341,6 +348,60 @@ public class GroupDetailsActivity extends AppCompatActivity {
 
     private void removeUserFromGroup(String message) {
 
+        Utils.dialog(GroupDetailsActivity.this);
+
+        List<String> member = new ArrayList<>();
+        member.add(message);
+
+        final RemoveGrpUserModel removeGrpUserModel = new RemoveGrpUserModel();
+        removeGrpUserModel.setAdminId(new AppPreferences(GroupDetailsActivity.this).getPrefrenceString(Constants.USER_ID));
+        removeGrpUserModel.setGroupId(senderOrUser);
+        removeGrpUserModel.setUsers(member);
+
+
+        ApiInterface apiService = ApiClient.getClient().create(ApiInterface.class);
+
+        Call<RemoveGroupUserResponse> removeUserService = apiService.removeUserFromGrp(removeGrpUserModel);
+
+
+        removeUserService.enqueue(new Callback<RemoveGroupUserResponse>() {
+            @Override
+            public void onResponse(Call<RemoveGroupUserResponse> call, Response<RemoveGroupUserResponse> response) {
+
+                try {
+                    Utils.dismissProgressDialog();
+
+                    RemoveGroupUserResponse removeGroupUserResponse = response.body();
+
+
+                    int status = removeGroupUserResponse.getStatus();
+
+                    if (status == 200) {
+
+                        llParticipants.removeAllViews();
+                        initUi();
+
+
+                    } else {
+
+                        Utils.showErrorOnTop(viewGroup, removeGroupUserResponse.getResponseMessage());
+                    }
+
+
+                } catch (Exception e) {
+                    Utils.dismissProgressDialog();
+                    e.printStackTrace();
+                }
+
+
+            }
+
+            @Override
+            public void onFailure(Call<RemoveGroupUserResponse> call, Throwable t) {
+                Utils.dismissProgressDialog();
+            }
+        });
+
 
     }
 
@@ -414,14 +475,14 @@ public class GroupDetailsActivity extends AppCompatActivity {
                             Session.getUpdateRecentChat();
 
                             finish();
+                        } else {
+                            Utils.showErrorOnTop(viewGroup, deleteGroupResponse.getResponseMessage());
                         }
 
 
                     } else {
 
-
-
-
+                        Utils.showErrorOnTop(viewGroup, "Server Error !!");
                     }
 
 
@@ -429,7 +490,7 @@ public class GroupDetailsActivity extends AppCompatActivity {
                     e.printStackTrace();
 
                     Utils.dismissProgressDialog();
-
+                    Utils.showErrorOnTop(viewGroup, "Server Error !!");
                 }
 
 

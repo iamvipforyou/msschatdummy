@@ -1,6 +1,7 @@
 package com.mss.msschat.AppUtils;
 
 import com.mss.msschat.Interfaces.UpdateRecentChats;
+import com.mss.msschat.Interfaces.updateContacts;
 
 /**
  * Created by mss on 1/12/16.
@@ -10,6 +11,8 @@ public class Session {
 
 
     private static UpdateRecentChats updateRecentChats;
+
+    private static updateContacts mUpdateContacts;
 
 
     public static void setUpdateRecentChats(UpdateRecentChats listner) {
@@ -32,5 +35,21 @@ public class Session {
 
     }
 
+
+    public static void setmUpdateContacts(updateContacts listner) {
+        if (listner != null) {
+
+            mUpdateContacts = listner;
+        }
+
+    }
+
+    public static void getUpdateContacts() {
+
+        if (mUpdateContacts != null) {
+
+            mUpdateContacts.updateContactList();
+        }
+    }
 
 }

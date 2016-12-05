@@ -10,6 +10,7 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.mss.msschat.AppUtils.ApiClient;
+import com.mss.msschat.AppUtils.Session;
 import com.mss.msschat.DataBase.Dao.ContactsDao;
 import com.mss.msschat.DataBase.Dto.ContactsDto;
 import com.mss.msschat.Interfaces.ApiInterface;
@@ -159,6 +160,8 @@ public class ContactFirstSyncIntentService extends IntentService {
                                 contactsDto.setUserName(contactData.getName());
                                 contactsDao.insert(contactsDto);
                             }
+
+                            Session.getUpdateContacts();
 
                             List<ContactsDto> allData = contactsDao.getAllAppContacts();
                             Log.e("nOt", "Successful");

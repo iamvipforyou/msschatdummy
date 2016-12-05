@@ -107,6 +107,30 @@ public class MessageDao extends Dao<MessageDto> {
         return messageList;
     }
 
+    public ArrayList<MessageDto> getAllMessagesUser(String senderId) {
+        ArrayList<MessageDto> messageList = new ArrayList<MessageDto>();
+        try {
 
+           // String sql = "select  * from allMessages" + ";";
+            String sql = "select  * from allMessages where senderId = '" + senderId + "' ;";
+            DatabaseHelper dbHelper = new DatabaseHelper(mContext);
+            Cursor cursor = dbHelper.getReadableDatabase().rawQuery(sql, null);
+            while (cursor.moveToNext()) {
+                try {
+                    MessageDto dto = buildDto(cursor);
+                    if (dto != null) {
+                        messageList.add(dto);
+                    }
+                } catch (Exception e) {
+                    Log.e(sql, "field not found", e);
+                }
+            }
+            cursor.close();
+            dbHelper.close();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return messageList;
+    }
 
 }

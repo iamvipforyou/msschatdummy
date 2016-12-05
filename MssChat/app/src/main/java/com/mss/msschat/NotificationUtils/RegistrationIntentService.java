@@ -41,7 +41,6 @@ public class RegistrationIntentService extends IntentService {
         try {
             // request token that will be used by the server to send push notifications
             String token = instanceID.getToken();
-
             mSession.setPrefrenceString(Constants.FCM_TOKEN, token);
 
 

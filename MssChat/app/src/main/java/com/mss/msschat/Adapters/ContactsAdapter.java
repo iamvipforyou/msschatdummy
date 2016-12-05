@@ -1,6 +1,7 @@
 package com.mss.msschat.Adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +12,9 @@ import android.widget.TextView;
 
 
 import com.bumptech.glide.Glide;
+import com.mss.msschat.Activities.ChatMessageActivity;
 import com.mss.msschat.DataBase.Dto.ContactsDto;
+import com.mss.msschat.DataBase.Dto.RecentChatDto;
 import com.mss.msschat.Models.ContactListModel;
 import com.mss.msschat.R;
 
@@ -80,6 +83,23 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ViewHo
             txtContactNumber = (TextView) itemView.findViewById(R.id.txt_contact_number);
             imgContactProfile = (ImageView) itemView.findViewById(R.id.img_contact_profile);
             llmain = (LinearLayout) itemView.findViewById(R.id.llmain);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    ContactsDto recentChatDto = allFriendsList.get(getPosition());
+
+
+                    Intent chatMessageIntent = new Intent(mContext, ChatMessageActivity.class);
+                    chatMessageIntent.putExtra("intentFrom", "contacts");
+                    chatMessageIntent.putExtra("id", recentChatDto.getContactUserId());
+                    chatMessageIntent.putExtra("user_name", recentChatDto.getUserName());
+                    chatMessageIntent.putExtra("user_image", recentChatDto.getUserPicture());
+                    chatMessageIntent.putExtra("typeMessage", "private");
+                    mContext.startActivity(chatMessageIntent);
+                }
+            });
         }
 
 

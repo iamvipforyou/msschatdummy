@@ -6,6 +6,7 @@ import android.text.TextUtils;
 
 import com.mss.msschat.AppUtils.AppPreferences;
 import com.mss.msschat.AppUtils.Constants;
+import com.mss.msschat.AppUtils.Utils;
 
 import java.util.List;
 
@@ -25,6 +26,7 @@ public class ConfirmPatternActivity extends me.zhanghai.android.patternlock.Conf
     @Override
     protected boolean isPatternCorrect(List<PatternView.Cell> pattern) {
         String patternSha1 = null;
+        Utils.setStatusBarColor(ConfirmPatternActivity.this);
         mSession = new AppPreferences(this);
         //checks for the value of pattern matches with stored pattern
         if (TextUtils.equals(PatternUtils.patternToSha1String(pattern), mSession.getPrefrenceString(Constants.PATTERN_SHA_VALUE))) {

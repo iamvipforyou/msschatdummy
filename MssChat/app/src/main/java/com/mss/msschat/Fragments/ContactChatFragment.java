@@ -16,8 +16,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.mss.msschat.Adapters.ContactsAdapter;
+import com.mss.msschat.AppUtils.Session;
 import com.mss.msschat.DataBase.Dao.ContactsDao;
 import com.mss.msschat.DataBase.Dto.ContactsDto;
+import com.mss.msschat.Interfaces.updateContacts;
 import com.mss.msschat.Models.ContactListModel;
 import com.mss.msschat.R;
 
@@ -30,7 +32,7 @@ import java.util.List;
  * Created by mss on 23/11/16.
  */
 
-public class ContactChatFragment extends Fragment {
+public class ContactChatFragment extends Fragment implements updateContacts {
 
     View rootView;
     Cursor cursor;
@@ -44,22 +46,22 @@ public class ContactChatFragment extends Fragment {
 
 
     List<ContactsDto> allUserFromContactList;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_contact_chat, container, false);
-        initUI(rootView);
+        initUI();
         return rootView;
     }
-    private void initUI(View rootView) {
+
+    private void initUI() {
         lvContacts = (RecyclerView) rootView.findViewById(R.id.lv_contacts);
         contactsDao = new ContactsDao(getActivity());
-
+        Session.setmUpdateContacts(this);
         //  setUpContacts();
 
 
         populateUI();
-
-
 
 
     }
@@ -67,12 +69,10 @@ public class ContactChatFragment extends Fragment {
     private void populateUI() {
 
 
-
         allUserFromContactList = contactsDao.getAllAppContacts();
 
 
-
-       // Collections.sort(contactList, new SortBasedOnName());
+        // Collections.sort(contactList, new SortBasedOnName());
         adapter = new ContactsAdapter(getActivity(), allUserFromContactList);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         lvContacts.setLayoutManager(layoutManager);
@@ -85,9 +85,6 @@ public class ContactChatFragment extends Fragment {
             }
         }, 200);
         */
-
-
-
 
 
     }
@@ -135,6 +132,7 @@ public class ContactChatFragment extends Fragment {
             }
         });
     }
+
     public void setUpContacts() {
         pDialog = new ProgressDialog(getActivity());
         pDialog.setMessage("Reading contacts...");
@@ -148,6 +146,23 @@ public class ContactChatFragment extends Fragment {
             }
         }).start();
     }
+
+    @Override
+    public void updateContactList() {
+
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+
+                initUI();
+
+
+            }
+        });
+
+
+    }
+
     public class SortBasedOnName implements Comparator {
         public int compare(Object o1, Object o2) {
             ContactListModel contactSortList1 = (ContactListModel) o1;

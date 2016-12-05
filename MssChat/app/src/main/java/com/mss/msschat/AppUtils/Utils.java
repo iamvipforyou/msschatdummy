@@ -368,17 +368,17 @@ public class Utils {
         if (diff < MINUTE_MILLIS) {
             return "just now";
         } else if (diff < 2 * MINUTE_MILLIS) {
-            return "a minute ago";
+            return "1 min";
         } else if (diff < 50 * MINUTE_MILLIS) {
-            return diff / MINUTE_MILLIS + " minutes ago";
+            return diff / MINUTE_MILLIS + " min";
         } else if (diff < 90 * MINUTE_MILLIS) {
-            return "an hour ago";
+            return "1 hour";
         } else if (diff < 24 * HOUR_MILLIS) {
-            return diff / HOUR_MILLIS + " hours ago";
+            return diff / HOUR_MILLIS + " hours";
         } else if (diff < 48 * HOUR_MILLIS) {
             return "yesterday";
         } else {
-            return diff / DAY_MILLIS + " days ago";
+            return diff / DAY_MILLIS + " days";
         }
     }
 

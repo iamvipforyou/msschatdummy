@@ -5,6 +5,7 @@ import android.content.Intent;
 
 import com.mss.msschat.AppUtils.AppPreferences;
 import com.mss.msschat.AppUtils.Constants;
+import com.mss.msschat.AppUtils.Utils;
 
 import java.util.List;
 
@@ -20,6 +21,7 @@ public class SetPatternActivity extends me.zhanghai.android.patternlock.SetPatte
     protected void onSetPattern(List<PatternView.Cell> pattern) {
         super.onSetPattern(pattern);
         mSession = new AppPreferences(this);
+        Utils.setStatusBarColor(SetPatternActivity.this);
         //SHA value of Pattern
         String patternSha1 = PatternUtils.patternToSha1String(pattern);
         // Save SHA of Pattern to Preferences

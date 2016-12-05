@@ -10,6 +10,8 @@ import com.mss.msschat.Models.DeleteGroupResponse;
 import com.mss.msschat.Models.GroupUserResponse.GroupUsersResponse;
 import com.mss.msschat.Models.RegistrationModel;
 import com.mss.msschat.Models.RegistrationResponse;
+import com.mss.msschat.Models.RemoveGroupUserResponse.RemoveGroupUserResponse;
+import com.mss.msschat.Models.RemoveGrpUserModel;
 import com.mss.msschat.Models.VerifyContactsModel;
 
 import retrofit2.Call;
@@ -43,6 +45,10 @@ public interface ApiInterface {
 
     @POST("api/deleteGroup")
     Call<DeleteGroupResponse> deleteGroupFromServer(@Body DeleteGroupModel deleteGroupModel);
+
+
+    @POST("api/removeGroupUsers")
+    Call<RemoveGroupUserResponse> removeUserFromGrp(@Body RemoveGrpUserModel removeGrpUserModel);
 
 
 }

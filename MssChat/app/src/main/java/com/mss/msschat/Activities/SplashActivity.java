@@ -7,6 +7,7 @@ import android.os.Handler;
 
 import com.mss.msschat.AppUtils.AppPreferences;
 import com.mss.msschat.AppUtils.Constants;
+import com.mss.msschat.AppUtils.Utils;
 import com.mss.msschat.R;
 
 
@@ -18,6 +19,7 @@ public class SplashActivity extends Activity {
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splash_activity);
+        Utils.setStatusBarColor(SplashActivity.this);
         mSession = new AppPreferences(this);
         new Handler().postDelayed(new Runnable() {
             @Override

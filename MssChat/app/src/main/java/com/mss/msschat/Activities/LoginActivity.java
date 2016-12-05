@@ -175,6 +175,9 @@ public class LoginActivity extends AppCompatActivity {
                             finish();
 
 
+                        } else if (responseStatus == 400) {
+                            String errorMessage = finalResponse.getResponseMessage();
+                            Toast.makeText(LoginActivity.this, "" + errorMessage, Toast.LENGTH_SHORT).show();
                         } else {
                             String errorMessage = finalResponse.getResponseMessage();
                             Toast.makeText(LoginActivity.this, "" + errorMessage, Toast.LENGTH_SHORT).show();
@@ -243,6 +246,7 @@ public class LoginActivity extends AppCompatActivity {
 
             case R.id.btn_signup:
                 if (validationSignUp()) {
+                    mSession.setPrefrenceString(Constants.USERNAME, editName.getText().toString());
                     signUpToServer();
                 }
                 break;

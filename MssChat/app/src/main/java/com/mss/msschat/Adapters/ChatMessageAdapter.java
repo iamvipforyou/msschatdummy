@@ -1,4 +1,5 @@
 package com.mss.msschat.Adapters;
+
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -7,13 +8,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.mss.msschat.AppUtils.Utils;
 import com.mss.msschat.Models.ChatMessageModel;
 import com.mss.msschat.R;
+
 import java.util.List;
 
-/**
- * Created by mss on 28/11/16.
- */
 
 public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.ViewHolder> {
 
@@ -47,19 +48,20 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
         ChatMessageModel chatMessageModel = dataList.get(position);
 
 
-        if (chatMessageModel.getType().equals("true")) {
+        if (chatMessageModel.getFrom().equals("true")) {
 
 
             holder.llSender.setVisibility(View.VISIBLE);
             holder.llUser.setVisibility(View.GONE);
+            holder.txtSenderMessage.setText(chatMessageModel.getMessage());
+            holder.txtSenderTime.setText(Utils.getTimeAgo(Long.parseLong(chatMessageModel.getDateTime())));
+
 
         } else {
-
-
             holder.llSender.setVisibility(View.GONE);
             holder.llUser.setVisibility(View.VISIBLE);
-
-
+            holder.txtUserMessage.setText(chatMessageModel.getMessage());
+            holder.txtReceiverTime.setText(Utils.getTimeAgo(Long.parseLong(chatMessageModel.getDateTime())));
         }
 
 
