@@ -1,14 +1,25 @@
 package com.mss.msschat.Activities;
 
+import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Base64;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -21,6 +32,7 @@ import com.mss.msschat.AppUtils.AppController;
 import com.mss.msschat.AppUtils.AppPreferences;
 import com.mss.msschat.AppUtils.Constants;
 import com.mss.msschat.AppUtils.Session;
+import com.mss.msschat.AppUtils.UserPicture;
 import com.mss.msschat.AppUtils.Utils;
 import com.mss.msschat.DataBase.Dao.MessageDao;
 import com.mss.msschat.DataBase.Dao.RecentChatDao;
@@ -35,6 +47,7 @@ import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -98,11 +111,15 @@ public class ChatMessageActivity extends AppCompatActivity {
     Chat chat;
     String friendName = "", friendid = "", TypeMessage = "";
     MessageDao messageDao;
-
+    private LinearLayout llTakePic;
+    private LinearLayout llChoosePic;
     private AppPreferences mSession;
     String friendsId;
     private String contactImage;
     private String typeMessageFrom;
+    private Bitmap imgBitmap;
+    private String userImage;
+    private String imagePath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,7 +131,7 @@ public class ChatMessageActivity extends AppCompatActivity {
 
     private void initUI() {
 
-
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         ll_txtTitles = (LinearLayout) findViewById(R.id.ll_title);
         mSession = new AppPreferences(ChatMessageActivity.this);
         messageDao = new MessageDao(ChatMessageActivity.this);
@@ -124,7 +141,12 @@ public class ChatMessageActivity extends AppCompatActivity {
 
     private void populateUI() {
 
-
+      /*  toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });*/
         Utils.setClassTitle(ChatMessageActivity.this, "User", toolbar);
         Utils.setStatusBarColor(ChatMessageActivity.this);
         recentChatDao = new RecentChatDao(ChatMessageActivity.this);
@@ -217,6 +239,7 @@ public class ChatMessageActivity extends AppCompatActivity {
             mSocket = appController.getSocket();
             mSocket.on("init", onInit);
             mSocket.on("message", onNewMessage);
+            mSocket.on("groupMsg", onGroupMessage);
             mSocket.connect();
             mSocket.emit("init", mSession.getPrefrenceString(Constants.USER_ID));
         } catch (Exception e) {
@@ -224,7 +247,7 @@ public class ChatMessageActivity extends AppCompatActivity {
         }
     }
 
-    @OnClick({R.id.ll_title, R.id.ll_btn_send})
+    @OnClick({R.id.ll_title, R.id.ll_btn_send, R.id.ibtn_back, R.id.ll_back})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.ll_title:
@@ -238,6 +261,15 @@ public class ChatMessageActivity extends AppCompatActivity {
 
             case R.id.ll_btn_send:
                 attemptSend();
+                break;
+
+            case R.id.ibtn_back:
+
+                finish();
+
+                break;
+            case R.id.ll_back:
+                finish();
                 break;
         }
 
@@ -271,22 +303,24 @@ public class ChatMessageActivity extends AppCompatActivity {
                         String id = null;
                         String senderMessage = null;
                         String value = null;
-
+                        String typeMessage = null;
                         friendsId = null;
                         userName = data.getString("userName");
                         senderMessage = data.getString("message");
 
                         id = data.getString("userId");
-                    //    contactImage = data.getString("userImage");
+                        contactImage = data.getString("profilePic");
                         friendsId = data.getString("userTo");
+                        typeMessage = data.getString("typeMessage");
+
 
                         if (id.equals(senderOrGrpId)) {
 
-                            addMessageToLocal(userName, senderMessage, "false", senderOrGrpId, "private");
+                            addMessageToLocal(userName, senderMessage, "false", senderOrGrpId, typeMessage);
 
                         } else {
 
-                         //   addMessageOfOther(userName, senderMessage, "false", friendsId, "private");
+                            //   addMessageOfOther(userName, senderMessage, "false", friendsId, "private");
 
                         }
 
@@ -297,6 +331,57 @@ public class ChatMessageActivity extends AppCompatActivity {
                     }
                 }
             });
+        }
+    };
+
+
+    private Emitter.Listener onGroupMessage = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+
+                    try {
+                        JSONObject data = (JSONObject) args[0];
+
+                        Log.e("data", data + "");
+                        String userName = null;
+                        String id = null;
+                        String senderMessage = null;
+                        String value = null;
+                        String typeMessage = null;
+                        friendsId = null;
+                        userName = data.getString("userName");
+                        senderMessage = data.getString("message");
+
+                        id = data.getString("groupId");
+                        contactImage = data.getString("profilePic");
+                        typeMessage = data.getString("typeMessage");
+
+
+                        if (id.equals(senderOrGrpId)) {
+
+                            addMessageToLocal(userName, senderMessage, "false", senderOrGrpId, typeMessage);
+
+                        } else {
+
+                            //   addMessageOfOther(userName, senderMessage, "false", friendsId, "private");
+
+                        }
+
+
+                    } catch (Exception e) {
+
+                        e.printStackTrace();
+                    }
+
+
+                }
+            });
+
+
         }
     };
 
@@ -316,7 +401,7 @@ public class ChatMessageActivity extends AppCompatActivity {
                     jMessage.put("isPrivate", true);
                     jMessage.put("userName", mSession.getPrefrenceString(Constants.USERNAME));
 
-                  //  jMessage.put("userImage", contactImage);
+                    //  jMessage.put("userImage", contactImage);
 
                     if (mSocket.connected()) {
                         mSocket.emit("message", jMessage);
@@ -337,7 +422,7 @@ public class ChatMessageActivity extends AppCompatActivity {
                     jMessage.put("userName", friendName);
                     if (mSocket.connected()) {
                         mSocket.emit("message", jMessage);
-                        addMessageToLocal(friendName, message, "true", senderOrGrpId, "private");
+                        addMessageToLocal(friendName, message, "true", senderOrGrpId, "group");
                         editMsg.setText("");
                         Session.getUpdateRecentChat();
                     } else {
@@ -424,5 +509,189 @@ public class ChatMessageActivity extends AppCompatActivity {
 
         Session.getUpdateRecentChat();
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        mSocket.disconnect();
+        mSocket.off("init", onInit);
+        mSocket.off("message", onNewMessage);
+        mSocket.off("groupMsg", onGroupMessage);
+
+
+    }
+
+
+    public void changeProfile() {
+        final Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_change_picture);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        WindowManager.LayoutParams wmlp = dialog.getWindow().getAttributes();
+        wmlp.gravity = Gravity.CENTER;
+        wmlp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        wmlp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        llTakePic = (LinearLayout) dialog.findViewById(R.id.ll_take_pic);
+        llChoosePic = (LinearLayout) dialog.findViewById(R.id.ll_choose_pic);
+
+        llTakePic.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(intent, 2);
+                dialog.dismiss();
+            }
+        });
+        llChoosePic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent galleryImageIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(galleryImageIntent, 3);
+                dialog.dismiss();
+
+            }
+        });
+        dialog.show();
+    }
+
+    //////////////////////////////////////////
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+
+        if (resultCode == RESULT_OK) {
+            if (requestCode == 2) {
+
+
+                try {
+                    imgBitmap = (Bitmap) data.getExtras().get("data");
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    imgBitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                    Uri temUri = getImageUri(ChatMessageActivity.this, imgBitmap);
+                    //   ivGrpImage.setImageBitmap(new UserPicture(temUri, getContentResolver()).getBitmap());
+                    imagePath = Utils.getAllImageAndVideoFilePath(this, temUri);
+                    userImage = "data:image/png;base64," + BitMapToString(new UserPicture(temUri, getContentResolver()).getBitmap());
+                    openSocket();
+
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            attemptPicSend();
+                        }
+                    }, 1000);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+
+            } else if (requestCode == 3) {
+
+                try {
+                    Uri selectedImageUri = data.getData();
+                    imgBitmap = new UserPicture(selectedImageUri, getContentResolver()).getBitmap();
+                    //     ivGrpImage.setImageBitmap(new UserPicture(selectedImageUri, getContentResolver()).getBitmap());
+
+                    imagePath = Utils.getAllImageAndVideoFilePath(this, selectedImageUri);
+                    userImage = "data:image/png;base64," + BitMapToString(new UserPicture(selectedImageUri, getContentResolver()).getBitmap());
+                    openSocket();
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            attemptPicSend();
+                        }
+                    }, 1000);
+
+
+                } catch (Exception e) {
+
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private void attemptPicSend() {
+
+        try {
+            if (typeMessageFrom.equals("private")) {
+                JSONObject jMessage = new JSONObject();
+                jMessage.put("userTo", senderOrGrpId);
+                jMessage.put("userId", mSession.getPrefrenceString(Constants.USER_ID));
+                jMessage.put("message", userImage);
+                jMessage.put("isMedia", false);
+                jMessage.put("isPrivate", true);
+                jMessage.put("userName", mSession.getPrefrenceString(Constants.USERNAME));
+
+                //  jMessage.put("userImage", contactImage);
+
+                if (mSocket.connected()) {
+                    mSocket.emit("message", jMessage);
+                    addMessageToLocal(friendName, "@picPath>" + imagePath, "true", senderOrGrpId, "private");
+                    editMsg.setText("");
+                    Session.getUpdateRecentChat();
+                } else {
+                    Toast.makeText(getApplicationContext(), "Connection Error !! ", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+
+                JSONObject jMessage = new JSONObject();
+                jMessage.put("userTo", senderOrGrpId);
+                jMessage.put("userId", mSession.getPrefrenceString(Constants.USER_ID));
+                jMessage.put("message", userImage);
+                jMessage.put("isMedia", false);
+                jMessage.put("isPrivate", false);
+                jMessage.put("userName", friendName);
+                if (mSocket.connected()) {
+                    mSocket.emit("message", jMessage);
+                    addMessageToLocal(friendName, "@picPath>" + imagePath, "true", senderOrGrpId, "group");
+                    editMsg.setText("");
+                    Session.getUpdateRecentChat();
+                } else {
+                    Toast.makeText(getApplicationContext(), "Connection Error !! ", Toast.LENGTH_SHORT).show();
+                }
+
+
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+    ////////////////////////////////////////
+
+    public Uri getImageUri(Context inContext, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+        return Uri.parse(path);
+    }
+
+    public String BitMapToString(Bitmap bitmap) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] b = baos.toByteArray();
+        String temp = null;
+        try {
+            System.gc();
+            temp = Base64.encodeToString(b, Base64.NO_WRAP);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } catch (OutOfMemoryError e) {
+            baos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
+            b = baos.toByteArray();
+            temp = Base64.encodeToString(b, Base64.NO_WRAP);
+            Log.e("EWN", "Out of memory error catched");
+        }
+        return temp;
     }
 }
