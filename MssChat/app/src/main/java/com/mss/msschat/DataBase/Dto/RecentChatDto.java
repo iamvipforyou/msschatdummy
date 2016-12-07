@@ -28,6 +28,8 @@ public class RecentChatDto extends Dto {
     @Column(name = "rImage", type = "TEXT")
     String profileImage;
 
+    boolean isSELECTED;
+
     public String getUserName() {
         return userName;
     }
@@ -83,5 +85,14 @@ public class RecentChatDto extends Dto {
 
     public void setProfileImage(String profileImage) {
         this.profileImage = profileImage;
+    }
+
+
+    public boolean isSELECTED() {
+        return isSELECTED;
+    }
+
+    public void setSELECTED(boolean SELECTED) {
+        isSELECTED = SELECTED;
     }
 }

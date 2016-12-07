@@ -290,11 +290,20 @@ public class Utils {
 
                 img.setImageBitmap(myBitmap);
 
+
+              //  releaseBitmap(myBitmap);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
 
+    }
+
+    public static void releaseBitmap(Bitmap mDrawBitmap) {
+        if (mDrawBitmap != null) {
+            mDrawBitmap.recycle();
+            mDrawBitmap = null;
+        }
     }
 
 

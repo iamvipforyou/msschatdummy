@@ -105,4 +105,13 @@ public class AppPreferences {
         editor.commit();
     }
 
+    public  long getPrefrenceLong(String keyName) {
+        return pref.getLong(keyName, 0);
+    }
+
+    public void setPrefrenceLong(String keyName, long intValue) {
+        editor.putLong(keyName, intValue);
+        editor.commit();
+    }
+
 }

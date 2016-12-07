@@ -29,6 +29,8 @@ public class RecentChatAdapter extends RecyclerView.Adapter<RecentChatAdapter.Vi
 
     List<RecentChatDto> recentChatModelArrayList;
     Context mContext;
+    public int longClicked;
+    public int checkedCount = 0;
 
     public RecentChatAdapter(Context context, List<RecentChatDto> recentChatModelArrayList) {
         this.mContext = context;
@@ -54,6 +56,10 @@ public class RecentChatAdapter extends RecyclerView.Adapter<RecentChatAdapter.Vi
             Glide.with(mContext).load(R.mipmap.ic_launcher).into(imageViewTarget);
         }
         holder.txtDate.setText(Utils.getTimeAgo(Long.parseLong(recentChatModel.getDateTime())));
+
+
+
+
 
     }
 
@@ -81,17 +87,96 @@ public class RecentChatAdapter extends RecyclerView.Adapter<RecentChatAdapter.Vi
                 @Override
                 public void onClick(View v) {
 
-                    RecentChatDto recentChatDto = recentChatModelArrayList.get(getPosition());
+
+                    if (longClicked == 1) {
 
 
-                    Intent chatMessageIntent = new Intent(mContext, ChatMessageActivity.class);
-                    chatMessageIntent.putExtra("intentFrom", "recent");
-                    chatMessageIntent.putExtra("id", recentChatDto.getSenderId());
-                    chatMessageIntent.putExtra("user_image", recentChatDto.getProfileImage());
-                    chatMessageIntent.putExtra("typeMessage", recentChatDto.getTypeMessage());
-                    mContext.startActivity(chatMessageIntent);
+                        if (checkedCount == recentChatModelArrayList.size()) {
+
+
+                            longClicked = 0;
+                            notifyDataSetChanged();
+
+
+                        } else {
+
+                            RecentChatDto groupMessageData = recentChatModelArrayList.get(getPosition());
+
+
+                            if (groupMessageData.isSELECTED() == false) {
+
+                                groupMessageData.setSELECTED(true);
+
+                                if (checkedCount > 0) {
+                                    checkedCount--;
+                                }
+
+                                notifyDataSetChanged();
+
+
+                            } else {
+
+
+                                groupMessageData.setSELECTED(false);
+
+                                checkedCount++;
+                                notifyDataSetChanged();
+
+                            }
+
+
+                        }
+
+
+                    } else {
+
+
+                        RecentChatDto recentChatDto = recentChatModelArrayList.get(getPosition());
+
+
+                        Intent chatMessageIntent = new Intent(mContext, ChatMessageActivity.class);
+                        chatMessageIntent.putExtra("intentFrom", "recent");
+                        chatMessageIntent.putExtra("id", recentChatDto.getSenderId());
+                        chatMessageIntent.putExtra("user_image", recentChatDto.getProfileImage());
+                        chatMessageIntent.putExtra("typeMessage", recentChatDto.getTypeMessage());
+                        mContext.startActivity(chatMessageIntent);
+                    }
                 }
             });
+
+
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+
+                    if (longClicked == 0) {
+
+                        longClicked = 1;
+                        RecentChatDto groupMessageData = recentChatModelArrayList.get(getPosition());
+
+                        groupMessageData.setSELECTED(true);
+
+                        checkedCount = recentChatModelArrayList.size();
+
+
+                        checkedCount--;
+
+
+                        notifyDataSetChanged();
+
+                        //    listner.changeMenuItems();
+
+
+                    }
+
+
+                    return false;
+
+
+                }
+            });
+
+
         }
     }
 

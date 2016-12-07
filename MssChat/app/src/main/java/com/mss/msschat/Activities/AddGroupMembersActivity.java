@@ -132,6 +132,7 @@ public class AddGroupMembersActivity extends AppCompatActivity implements showSe
         selectedMembers = ((AddMembersAdapter) adapter).allSelectedMembers();
         count = selectedMembers.size();
         selectedUserArray = new ArrayList<String>();
+        selectedUserArray.add(new AppPreferences(AddGroupMembersActivity.this).getPrefrenceString(Constants.USER_MOBILE_NUMBER));
         for (int i = 0; i < selectedMembers.size(); i++) {
             ContactsDto contactsDto = selectedMembers.get(i);
             if (contactsDto.isSelected()) {

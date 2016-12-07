@@ -6,7 +6,9 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
@@ -23,6 +25,7 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -47,7 +50,13 @@ import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -120,7 +129,22 @@ public class ChatMessageActivity extends AppCompatActivity {
     private Bitmap imgBitmap;
     private String userImage;
     private String imagePath;
+    /////////////////////////////
+    String userName = null;
+    String id = null;
+    String senderMessage = null;
+    String value = null;
+    String typeMessage = null;
 
+    ///////////////////////
+
+    String gUserName = null;
+    String gId = null;
+    String gSenderMessage = null;
+    String gTypeMessage = null;
+
+
+    ////////////
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -247,7 +271,7 @@ public class ChatMessageActivity extends AppCompatActivity {
         }
     }
 
-    @OnClick({R.id.ll_title, R.id.ll_btn_send, R.id.ibtn_back, R.id.ll_back})
+    @OnClick({R.id.ll_title, R.id.ll_btn_send, R.id.ibtn_back, R.id.ll_back, R.id.ll_camera})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.ll_title:
@@ -270,6 +294,10 @@ public class ChatMessageActivity extends AppCompatActivity {
                 break;
             case R.id.ll_back:
                 finish();
+                break;
+            case R.id.ll_camera:
+
+                changeProfile();
                 break;
         }
 
@@ -299,11 +327,11 @@ public class ChatMessageActivity extends AppCompatActivity {
                         JSONObject data = (JSONObject) args[0];
 
                         Log.e("data", data + "");
-                        String userName = null;
+                       /* String userName = null;
                         String id = null;
                         String senderMessage = null;
                         String value = null;
-                        String typeMessage = null;
+                        String typeMessage = null;*/
                         friendsId = null;
                         userName = data.getString("userName");
                         senderMessage = data.getString("message");
@@ -316,11 +344,51 @@ public class ChatMessageActivity extends AppCompatActivity {
 
                         if (id.equals(senderOrGrpId)) {
 
-                            addMessageToLocal(userName, senderMessage, "false", senderOrGrpId, typeMessage);
+                            if (senderMessage.contains("http://mastersoftwaretechnologies")) {
+
+                                new DownloadImageFromURl(new TaskListener() {
+                                    @Override
+                                    public void onFinished(String result) {
+
+
+                                        addMessageToLocal(userName, "@picPath>" + result, "false", senderOrGrpId, typeMessage);
+
+
+                                    }
+                                }).execute(senderMessage);
+
+
+                            } else {
+
+
+                                addMessageToLocal(userName, senderMessage, "false", senderOrGrpId, typeMessage);
+                            }
+
 
                         } else {
 
                             //   addMessageOfOther(userName, senderMessage, "false", friendsId, "private");
+
+
+                            if (senderMessage.contains("http://mastersoftwaretechnologies")) {
+
+                                new DownloadImageFromURl(new TaskListener() {
+                                    @Override
+                                    public void onFinished(String result) {
+
+
+                                        addMessageOfOther(userName, "@picPath>" + result, "false", senderOrGrpId, typeMessage);
+
+
+                                    }
+                                }).execute(senderMessage);
+
+
+                            } else {
+
+                                addMessageOfOther(userName, senderMessage, "false", friendsId, typeMessage);
+
+                            }
 
                         }
 
@@ -347,25 +415,59 @@ public class ChatMessageActivity extends AppCompatActivity {
                         JSONObject data = (JSONObject) args[0];
 
                         Log.e("data", data + "");
-                        String userName = null;
-                        String id = null;
-                        String senderMessage = null;
-                        String value = null;
-                        String typeMessage = null;
+
                         friendsId = null;
-                        userName = data.getString("userName");
-                        senderMessage = data.getString("message");
+                        gUserName = data.getString("userName");
+                        gSenderMessage = data.getString("message");
 
-                        id = data.getString("groupId");
+                        gId = data.getString("groupId");
                         contactImage = data.getString("profilePic");
-                        typeMessage = data.getString("typeMessage");
+                        gTypeMessage = data.getString("typeMessage");
 
 
-                        if (id.equals(senderOrGrpId)) {
+                        if (gId.equals(senderOrGrpId)) {
 
-                            addMessageToLocal(userName, senderMessage, "false", senderOrGrpId, typeMessage);
+
+                            if (gSenderMessage.contains("http://mastersoftwaretechnologies")) {
+
+                                new DownloadImageFromURl(new TaskListener() {
+                                    @Override
+                                    public void onFinished(String result) {
+
+
+                                        addMessageToLocal(gUserName, "@picPath>" + result, "false", senderOrGrpId, gTypeMessage);
+
+                                    }
+                                }).execute(senderMessage);
+
+
+                            } else {
+                                addMessageToLocal(gUserName, gSenderMessage, "false", senderOrGrpId, gTypeMessage);
+
+                            }
+
 
                         } else {
+
+
+                            if (gSenderMessage.contains("http://mastersoftwaretechnologies")) {
+
+                                new DownloadImageFromURl(new TaskListener() {
+                                    @Override
+                                    public void onFinished(String result) {
+
+
+                                        addMessageOfOther(gUserName, "@picPath>" + result, "false", senderOrGrpId, gTypeMessage);
+
+                                    }
+                                }).execute(senderMessage);
+
+
+                            } else {
+                                addMessageOfOther(gUserName, gSenderMessage, "false", senderOrGrpId, gTypeMessage);
+
+                            }
+
 
                             //   addMessageOfOther(userName, senderMessage, "false", friendsId, "private");
 
@@ -624,7 +726,7 @@ public class ChatMessageActivity extends AppCompatActivity {
                 jMessage.put("userTo", senderOrGrpId);
                 jMessage.put("userId", mSession.getPrefrenceString(Constants.USER_ID));
                 jMessage.put("message", userImage);
-                jMessage.put("isMedia", false);
+                jMessage.put("isMedia", true);
                 jMessage.put("isPrivate", true);
                 jMessage.put("userName", mSession.getPrefrenceString(Constants.USERNAME));
 
@@ -644,7 +746,7 @@ public class ChatMessageActivity extends AppCompatActivity {
                 jMessage.put("userTo", senderOrGrpId);
                 jMessage.put("userId", mSession.getPrefrenceString(Constants.USER_ID));
                 jMessage.put("message", userImage);
-                jMessage.put("isMedia", false);
+                jMessage.put("isMedia", true);
                 jMessage.put("isPrivate", false);
                 jMessage.put("userName", friendName);
                 if (mSocket.connected()) {
@@ -694,4 +796,119 @@ public class ChatMessageActivity extends AppCompatActivity {
         }
         return temp;
     }
+
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        mSocket.disconnect();
+        mSocket.off("init", onInit);
+        mSocket.off("message", onNewMessage);
+        mSocket.off("groupMsg", onGroupMessage);
+
+    }
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mSocket.disconnect();
+        mSocket.off("init", onInit);
+        mSocket.off("message", onNewMessage);
+        mSocket.off("groupMsg", onGroupMessage);
+
+
+    }
+
+
+    public interface TaskListener {
+        public void onFinished(String result);
+    }
+
+    public class DownloadImageFromURl extends AsyncTask<String, String, String> {
+        private final TaskListener taskListener;
+        ProgressBar mProgressBar;
+
+        public DownloadImageFromURl(TaskListener listner) {
+
+
+            taskListener = listner;
+
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+
+//            showDialog(progress_bar_type);
+
+        }
+
+        @Override
+        protected String doInBackground(final String... f_url) {
+            int count;
+            try {
+                URL url = new URL(f_url[0].toString());
+                URLConnection conection = url.openConnection();
+                conection.connect();
+                int lenghtOfFile = conection.getContentLength();
+                InputStream input = new BufferedInputStream(url.openStream(), 8192);
+                //    long TotalCount = new AppPreferences(ChatMessageActivity.this).getPrefrenceLong("countDownload");
+                new AppPreferences(ChatMessageActivity.this).setPrefrenceLong("countDownload", System.currentTimeMillis());
+                OutputStream output = new FileOutputStream("/sdcard/.MssChat/attachments" + new AppPreferences(ChatMessageActivity.this).getPrefrenceLong("countDownload") + ".jpg");
+                byte data[] = new byte[1024];
+                long total = 0;
+                while ((count = input.read(data)) != -1) {
+                    total += count;
+                    // publishing the progress....
+                    // After this onProgressUpdate will be called
+                    publishProgress("" + (int) ((total * 100) / lenghtOfFile));
+                    // writing data to file
+                    output.write(data, 0, count);
+                }
+                // flushing output
+                output.flush();
+                // closing streams
+                output.close();
+                input.close();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+//                Log.e("Error: ", e.getMessage());
+            }
+
+            String result = Environment.getExternalStorageDirectory().toString() + "/.MssChat/attachments" + new AppPreferences(ChatMessageActivity.this).getPrefrenceLong("countDownload") + ".jpg";
+
+            return result;
+        }
+
+        /**
+         * Updating progress bar
+         */
+        protected void onProgressUpdate(String... progress) {
+            // setting progress percentage
+//            pDialog.setProgress(Integer.parseInt(progress[0]));
+        }
+
+
+        @Override
+        protected void onPostExecute(String file_url) {
+
+
+            if (this.taskListener != null) {
+
+                // And if it is we call the callback function on it.
+                this.taskListener.onFinished(file_url);
+            }
+            //     pdfView.fromFile(new File(Environment.getExternalStorageDirectory().toString() + "/pdf/hhhh.pdf")).defaultPage(1).onPageChange(PresonalizeMedicalProfileActivity.this).load();
+
+
+        }
+
+
+    }
+
+
 }

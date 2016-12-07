@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputLayout;
@@ -44,6 +45,7 @@ import com.mss.msschat.R;
 import com.mss.msschat.Services.ContactFirstSyncIntentService;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -126,6 +128,18 @@ public class LoginActivity extends AppCompatActivity {
     private void populateUI() {
         mSession = new AppPreferences(LoginActivity.this);
         toolbarTitle.setText("Sign Up");
+
+
+        try {
+
+                String extStorageDirectory = Environment.getExternalStorageDirectory()
+                        .toString();
+                File folder = new File(extStorageDirectory, ".MssChat");
+                folder.mkdir();
+            new AppPreferences(LoginActivity.this).setPrefrenceLong("countDownload", System.currentTimeMillis());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -247,6 +261,7 @@ public class LoginActivity extends AppCompatActivity {
             case R.id.btn_signup:
                 if (validationSignUp()) {
                     mSession.setPrefrenceString(Constants.USERNAME, editName.getText().toString());
+                    mSession.setPrefrenceString(Constants.USER_MOBILE_NUMBER, editPassword.getText().toString());
                     signUpToServer();
                 }
                 break;

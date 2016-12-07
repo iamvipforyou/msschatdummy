@@ -9,10 +9,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.mss.msschat.AppUtils.Utils;
 import com.mss.msschat.Models.ChatMessageModel;
 import com.mss.msschat.R;
+import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.util.List;
 
 
@@ -51,17 +54,70 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
         if (chatMessageModel.getFrom().equals("true")) {
 
 
-            holder.llSender.setVisibility(View.VISIBLE);
-            holder.llUser.setVisibility(View.GONE);
-            holder.txtSenderMessage.setText(chatMessageModel.getMessage());
-            holder.txtSenderTime.setText(Utils.getTimeAgo(Long.parseLong(chatMessageModel.getDateTime())));
+            if (chatMessageModel.getMessage().contains("@picPath>")) {
+
+
+                String imageMessage = chatMessageModel.getMessage();
+
+
+                String[] completePath = imageMessage.split(">");
+
+
+                String picturePath = completePath[1];
+
+
+                holder.llUser.setVisibility(View.GONE);
+                holder.llSender.setVisibility(View.VISIBLE);
+                holder.llSenderText.setVisibility(View.GONE);
+                holder.txtSenderMessage.setVisibility(View.GONE);
+                holder.llSenderImage.setVisibility(View.VISIBLE);
+                holder.txtSenderTime.setText(Utils.getTimeAgo(Long.parseLong(chatMessageModel.getDateTime())));
+                Glide.with(mContext).load(new File(picturePath)).into(holder.iVSender);
+                //  Utils.loadAllImageFromStorage(holder.iVSender, picturePath);
+
+
+            } else {
+
+                holder.llSender.setVisibility(View.VISIBLE);
+                holder.llUser.setVisibility(View.GONE);
+                holder.llSenderImage.setVisibility(View.GONE);
+                holder.txtSenderMessage.setText(chatMessageModel.getMessage());
+                holder.txtSenderTime.setText(Utils.getTimeAgo(Long.parseLong(chatMessageModel.getDateTime())));
+            }
 
 
         } else {
-            holder.llSender.setVisibility(View.GONE);
-            holder.llUser.setVisibility(View.VISIBLE);
-            holder.txtUserMessage.setText(chatMessageModel.getMessage());
-            holder.txtReceiverTime.setText(Utils.getTimeAgo(Long.parseLong(chatMessageModel.getDateTime())));
+
+
+            if (chatMessageModel.getMessage().contains("@picPath>")) {
+
+
+                String imageMessage = chatMessageModel.getMessage();
+
+
+                String[] completePath = imageMessage.split(">");
+
+                String picturePath = completePath[1];
+
+                holder.llSender.setVisibility(View.GONE);
+                holder.llUser.setVisibility(View.VISIBLE);
+                holder.llImageMessage.setVisibility(View.VISIBLE);
+                holder.llTextMessage.setVisibility(View.GONE);
+                holder.txtUserMessage.setVisibility(View.GONE);
+                holder.txtReceiverTime.setText(Utils.getTimeAgo(Long.parseLong(chatMessageModel.getDateTime())));
+
+                Glide.with(mContext).load(new File(picturePath)).into(holder.iVMessage);
+
+
+            } else {
+
+
+                holder.llSender.setVisibility(View.GONE);
+                holder.llUser.setVisibility(View.VISIBLE);
+                holder.llImageMessage.setVisibility(View.GONE);
+                holder.txtUserMessage.setText(chatMessageModel.getMessage());
+                holder.txtReceiverTime.setText(Utils.getTimeAgo(Long.parseLong(chatMessageModel.getDateTime())));
+            }
         }
 
 
