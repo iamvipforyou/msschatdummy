@@ -99,6 +99,13 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
 
                 String picturePath = completePath[1];
 
+                ///////////////////////////
+
+
+
+
+                ///////////////////////
+
                 holder.llSender.setVisibility(View.GONE);
                 holder.llUser.setVisibility(View.VISIBLE);
                 holder.llImageMessage.setVisibility(View.VISIBLE);

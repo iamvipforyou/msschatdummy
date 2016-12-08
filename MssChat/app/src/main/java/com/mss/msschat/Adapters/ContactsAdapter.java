@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.mss.msschat.Activities.ChatMessageActivity;
+import com.mss.msschat.AppUtils.Utils;
 import com.mss.msschat.DataBase.Dto.ContactsDto;
 import com.mss.msschat.DataBase.Dto.RecentChatDto;
 import com.mss.msschat.Models.ContactListModel;
@@ -47,7 +48,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ViewHo
     @Override
     public void onBindViewHolder(ContactsAdapter.ViewHolder holder, int position) {
 
-        ContactsDto contactsDto = allFriendsList.get(position);
+        final ContactsDto contactsDto = allFriendsList.get(position);
 
 
         holder.txtContactName.setText(contactsDto.getUserName());
@@ -60,6 +61,16 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ViewHo
             holder.imgContactProfile.setImageResource(R.mipmap.ic_launcher);
 
         }
+
+
+        holder.imgContactProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                Utils.showImageDialog(mContext, contactsDto.getUserPicture(), contactsDto.getUserName());
+            }
+        });
 
     }
 

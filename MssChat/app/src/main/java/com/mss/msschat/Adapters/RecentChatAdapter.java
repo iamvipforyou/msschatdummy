@@ -1,5 +1,6 @@
 package com.mss.msschat.Adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
@@ -15,6 +16,7 @@ import com.mss.msschat.Activities.AddGroupMembersActivity;
 import com.mss.msschat.Activities.ChatMessageActivity;
 import com.mss.msschat.AppUtils.Utils;
 import com.mss.msschat.DataBase.Dto.RecentChatDto;
+import com.mss.msschat.Interfaces.DeleteSelectedRecent;
 import com.mss.msschat.Models.RecentChatModel;
 import com.mss.msschat.R;
 
@@ -31,10 +33,13 @@ public class RecentChatAdapter extends RecyclerView.Adapter<RecentChatAdapter.Vi
     Context mContext;
     public int longClicked;
     public int checkedCount = 0;
+    Activity activity;
+    DeleteSelectedRecent listner;
 
-    public RecentChatAdapter(Context context, List<RecentChatDto> recentChatModelArrayList) {
+    public RecentChatAdapter(Context context, List<RecentChatDto> recentChatModelArrayList, DeleteSelectedRecent deleteSelectedRecent) {
         this.mContext = context;
         this.recentChatModelArrayList = recentChatModelArrayList;
+        this.listner = deleteSelectedRecent;
     }
 
     @Override
@@ -45,20 +50,67 @@ public class RecentChatAdapter extends RecyclerView.Adapter<RecentChatAdapter.Vi
 
     @Override
     public void onBindViewHolder(RecentChatAdapter.ViewHolder holder, int position) {
-        RecentChatDto recentChatModel = recentChatModelArrayList.get(position);
+        final RecentChatDto recentChatModel = recentChatModelArrayList.get(position);
         holder.txtName.setText(recentChatModel.getUserName());
-        holder.txtChatMessage.setText(recentChatModel.getMessage());
+
+
+        if (recentChatModel.getMessage().contains("@picPath>")) {
+            holder.txtChatMessage.setText("Image");
+        } else {
+            holder.txtChatMessage.setText(recentChatModel.getMessage());
+        }
+
+
         GlideDrawableImageViewTarget imageViewTarget = new GlideDrawableImageViewTarget(holder.imgProfile);
 
-        if (recentChatModel.getProfileImage() != null) {
+     /*   if (recentChatModel.getProfileImage() != null) {
             Glide.with(mContext).load(recentChatModel.getProfileImage()).into(imageViewTarget);
         } else {
             Glide.with(mContext).load(R.mipmap.ic_launcher).into(imageViewTarget);
-        }
+        }*/
         holder.txtDate.setText(Utils.getTimeAgo(Long.parseLong(recentChatModel.getDateTime())));
 
 
+        if (recentChatModel.isSELECTED()) {
 
+            holder.imgProfile.setImageResource(R.drawable.tick_icon);
+        } else {
+
+
+            if (recentChatModel.getProfileImage() != null) {
+                Glide.with(mContext).load(recentChatModel.getProfileImage()).into(imageViewTarget);
+            } else {
+                Glide.with(mContext).load(R.mipmap.ic_launcher).into(imageViewTarget);
+            }
+
+        }
+
+
+        if (recentChatModel.isSELECTED() == false) {
+            holder.imgProfile.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+
+                    Utils.showImageDialog(mContext, recentChatModel.getProfileImage(), recentChatModel.getUserName());
+
+                }
+            });
+
+
+        }
+
+        if (recentChatModel.getMessageCount().equals("0")) {
+
+            holder.txtBadge.setVisibility(View.GONE);
+
+        } else {
+
+            holder.txtBadge.setVisibility(View.VISIBLE);
+            holder.txtBadge.setText("" + recentChatModel.getMessageCount());
+
+
+        }
 
 
     }
@@ -95,7 +147,9 @@ public class RecentChatAdapter extends RecyclerView.Adapter<RecentChatAdapter.Vi
 
 
                             longClicked = 0;
+
                             notifyDataSetChanged();
+                            listner.deleteSelected();
 
 
                         } else {
@@ -112,7 +166,7 @@ public class RecentChatAdapter extends RecyclerView.Adapter<RecentChatAdapter.Vi
                                 }
 
                                 notifyDataSetChanged();
-
+                                listner.deleteSelected();
 
                             } else {
 
@@ -121,7 +175,7 @@ public class RecentChatAdapter extends RecyclerView.Adapter<RecentChatAdapter.Vi
 
                                 checkedCount++;
                                 notifyDataSetChanged();
-
+                                listner.deleteSelected();
                             }
 
 
@@ -163,7 +217,7 @@ public class RecentChatAdapter extends RecyclerView.Adapter<RecentChatAdapter.Vi
 
 
                         notifyDataSetChanged();
-
+                        listner.deleteSelected();
                         //    listner.changeMenuItems();
 
 
@@ -178,6 +232,10 @@ public class RecentChatAdapter extends RecyclerView.Adapter<RecentChatAdapter.Vi
 
 
         }
+    }
+
+    public List<RecentChatDto> getAllSelectedList() {
+        return recentChatModelArrayList;
     }
 
 }

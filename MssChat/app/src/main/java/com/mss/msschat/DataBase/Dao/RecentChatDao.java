@@ -69,7 +69,7 @@ public class RecentChatDao extends Dao<RecentChatDto> {
         recentChatDto.setDateTime(cursor.getString(cursor.getColumnIndexOrThrow("rDateTime")));
         recentChatDto.setTypeMessage(cursor.getString(cursor.getColumnIndexOrThrow("rTypeMessage")));
         recentChatDto.setProfileImage(cursor.getString(cursor.getColumnIndexOrThrow("rImage")));
-
+        recentChatDto.setMessageCount(cursor.getString(cursor.getColumnIndexOrThrow("rCount")));
         return recentChatDto;
     }
 

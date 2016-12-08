@@ -28,6 +28,9 @@ public class RecentChatDto extends Dto {
     @Column(name = "rImage", type = "TEXT")
     String profileImage;
 
+    @Column(name = "rCount", type = "TEXT")
+    String messageCount;
+
     boolean isSELECTED;
 
     public String getUserName() {
@@ -94,5 +97,14 @@ public class RecentChatDto extends Dto {
 
     public void setSELECTED(boolean SELECTED) {
         isSELECTED = SELECTED;
+    }
+
+
+    public String getMessageCount() {
+        return messageCount;
+    }
+
+    public void setMessageCount(String messageCount) {
+        this.messageCount = messageCount;
     }
 }

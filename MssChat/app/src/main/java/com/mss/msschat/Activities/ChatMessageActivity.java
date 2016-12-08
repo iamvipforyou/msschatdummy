@@ -1,17 +1,23 @@
 package com.mss.msschat.Activities;
 
 import android.app.Dialog;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
+import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.NotificationCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -43,6 +49,7 @@ import com.mss.msschat.DataBase.Dto.MessageDto;
 import com.mss.msschat.DataBase.Dto.RecentChatDto;
 import com.mss.msschat.Models.ChatMessageModel;
 import com.mss.msschat.Models.Message;
+import com.mss.msschat.NotificationUtils.PushNotificationService;
 import com.mss.msschat.R;
 import com.mss.msschat.SocketUtils.Chat;
 import com.mss.msschat.SocketUtils.Emitters;
@@ -74,7 +81,7 @@ import io.socket.emitter.Emitter;
 
 public class ChatMessageActivity extends AppCompatActivity {
 
-
+    private int mId;
     @Bind(R.id.ibtn_back)
     ImageView ibtnBack;
     @Bind(R.id.ll_back)
@@ -275,11 +282,18 @@ public class ChatMessageActivity extends AppCompatActivity {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.ll_title:
+                if (typeMessageFrom.equals(Constants.GROUP_TYPE)) {
+                    Intent detailsIntent = new Intent(ChatMessageActivity.this, GroupDetailsActivity.class);
+                    detailsIntent.putExtra("id", senderOrGrpId);
+                    startActivity(detailsIntent);
+                    finish();
+                } else {
+                    Intent detailsIntent = new Intent(ChatMessageActivity.this, FriendProfileActivity.class);
+                    detailsIntent.putExtra("userId", senderOrGrpId);
+                    startActivity(detailsIntent);
 
-                Intent detailsIntent = new Intent(ChatMessageActivity.this, GroupDetailsActivity.class);
-                detailsIntent.putExtra("id", senderOrGrpId);
-                startActivity(detailsIntent);
-                finish();
+
+                }
 
                 break;
 
@@ -377,8 +391,9 @@ public class ChatMessageActivity extends AppCompatActivity {
                                     public void onFinished(String result) {
 
 
-                                        addMessageOfOther(userName, "@picPath>" + result, "false", senderOrGrpId, typeMessage);
+                                        addMessageOfOther(userName, "@picPath>" + result, "false", id, typeMessage);
 
+                                        createNotification(userName, "Image");
 
                                     }
                                 }).execute(senderMessage);
@@ -386,8 +401,8 @@ public class ChatMessageActivity extends AppCompatActivity {
 
                             } else {
 
-                                addMessageOfOther(userName, senderMessage, "false", friendsId, typeMessage);
-
+                                addMessageOfOther(userName, senderMessage, "false", id, typeMessage);
+                                createNotification(userName, senderMessage);
                             }
 
                         }
@@ -437,13 +452,14 @@ public class ChatMessageActivity extends AppCompatActivity {
 
                                         addMessageToLocal(gUserName, "@picPath>" + result, "false", senderOrGrpId, gTypeMessage);
 
+                                        createNotification(gUserName, "Image");
                                     }
-                                }).execute(senderMessage);
+                                }).execute(gSenderMessage);
 
 
                             } else {
                                 addMessageToLocal(gUserName, gSenderMessage, "false", senderOrGrpId, gTypeMessage);
-
+                                createNotification(gUserName, gSenderMessage);
                             }
 
 
@@ -457,14 +473,14 @@ public class ChatMessageActivity extends AppCompatActivity {
                                     public void onFinished(String result) {
 
 
-                                        addMessageOfOther(gUserName, "@picPath>" + result, "false", senderOrGrpId, gTypeMessage);
+                                        addMessageOfOther(gUserName, "@picPath>" + result, "false", gId, gTypeMessage);
 
                                     }
-                                }).execute(senderMessage);
+                                }).execute(gSenderMessage);
 
 
                             } else {
-                                addMessageOfOther(gUserName, gSenderMessage, "false", senderOrGrpId, gTypeMessage);
+                                addMessageOfOther(gUserName, gSenderMessage, "false", gId, gTypeMessage);
 
                             }
 
@@ -571,6 +587,7 @@ public class ChatMessageActivity extends AppCompatActivity {
         recentChatDto.setTypeMessage(messageType);
         recentChatDto.setFrom(value);
         recentChatDto.setUserName(username);
+        recentChatDto.setMessageCount("0");
 
 
         recentChatDao.insert(recentChatDto);
@@ -605,7 +622,7 @@ public class ChatMessageActivity extends AppCompatActivity {
         recentChatDto.setTypeMessage(messageType);
         recentChatDto.setFrom(value);
         recentChatDto.setUserName(username);
-
+        recentChatDto.setMessageCount("0");
 
         recentChatDao.insert(recentChatDto);
 
@@ -617,11 +634,11 @@ public class ChatMessageActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
 
+        mSocket.emit("offline", mSession.getPrefrenceString(Constants.USER_ID));
         mSocket.disconnect();
         mSocket.off("init", onInit);
         mSocket.off("message", onNewMessage);
         mSocket.off("groupMsg", onGroupMessage);
-
 
     }
 
@@ -801,7 +818,7 @@ public class ChatMessageActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-
+        mSocket.emit("offline", mSession.getPrefrenceString(Constants.USER_ID));
         mSocket.disconnect();
         mSocket.off("init", onInit);
         mSocket.off("message", onNewMessage);
@@ -813,6 +830,7 @@ public class ChatMessageActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        mSocket.emit("offline", mSession.getPrefrenceString(Constants.USER_ID));
         mSocket.disconnect();
         mSocket.off("init", onInit);
         mSocket.off("message", onNewMessage);
@@ -906,6 +924,39 @@ public class ChatMessageActivity extends AppCompatActivity {
 
 
         }
+
+
+    }
+
+
+    private void createNotification(String userName, String notification) {
+
+        Bitmap bmp = BitmapFactory.decodeResource((ChatMessageActivity.this).getResources(), R.mipmap.notification);
+       /* Context context = getBaseContext();
+        NotificationCompat.Builder mBuilder = (NotificationCompat.Builder) new NotificationCompat.Builder(context).setLargeIcon(bmp).setContentTitle("MssChat").setContentText(notification);
+
+        NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.notify(0, mBuilder.build());*/
+
+
+        NotificationCompat.Builder mBuilder = (NotificationCompat.Builder) new NotificationCompat.Builder(ChatMessageActivity.this).setLargeIcon(bmp).setSmallIcon(R.mipmap.notification).setContentTitle(userName).setContentText(notification).setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
+
+
+        Intent resultIntent = new Intent(this, MainActivity.class);
+
+
+        resultIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(ChatMessageActivity.this);
+
+        stackBuilder.addParentStack(MainActivity.class);
+
+        stackBuilder.addNextIntent(resultIntent);
+        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+        mBuilder.setContentIntent(resultPendingIntent);
+        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+// mId allows you to update the notification later on.
+        mBuilder.setAutoCancel(true);
+        mNotificationManager.notify(mId, mBuilder.build());
 
 
     }

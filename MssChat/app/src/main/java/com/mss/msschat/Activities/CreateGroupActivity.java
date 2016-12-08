@@ -198,6 +198,7 @@ public class CreateGroupActivity extends AppCompatActivity {
         recentChatDto.setMessage("");
         recentChatDto.setTypeMessage("group");
         recentChatDto.setProfileImage(responseData.getGroupPic());
+        recentChatDto.setMessageCount("0");
         recentChatDao.insert(recentChatDto);
 
 

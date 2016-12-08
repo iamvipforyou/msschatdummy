@@ -80,27 +80,28 @@ public class ContactFirstSyncIntentService extends IntentService {
                 for (int contactNumber = 0; contactNumber < mAllData.size(); contactNumber++) {
 
                     ContactListModel contactListModel = mAllData.get(contactNumber);
-                    List<String> numbers = contactListModel.getPhoneno();
-                    if (numbers.size() > 0) {
-                        String validNumber = numbers.get(0).replaceAll("[\\-\\+\\.\\^:,]", "").replaceAll("\\s", "").replaceAll("\\(", "").replaceAll("\\)", "");
+
+                    if (contactListModel.getPhoneno() != null) {
+                        List<String> numbers = contactListModel.getPhoneno();
+
+                        if (numbers.size() > 0) {
+                            String validNumber = numbers.get(0).replaceAll("[\\-\\+\\.\\^:,]", "").replaceAll("\\s", "").replaceAll("\\(", "").replaceAll("\\)", "").replaceAll("\\s+", "").replaceAll("[\\D]", "").replaceAll("[^0-9]+", "");
 
 
-                        if (validNumber.length() > 10) {
+                            if (validNumber.length() > 10) {
 
-                            String trimNumber = validNumber.substring(validNumber.length() - 10, validNumber.length());
+                                String trimNumber = validNumber.substring(validNumber.length() - 10, validNumber.length());
 
-                            allContactToSendList.add(Long.parseLong(trimNumber));
-                        } else if (validNumber.length() == 10) {
+                                allContactToSendList.add(Long.parseLong(trimNumber));
+                            } else if (validNumber.length() == 10) {
 
 
-                            allContactToSendList.add(Long.parseLong(validNumber));
-                        } else {
+                                allContactToSendList.add(Long.parseLong(validNumber));
+                            }
+
 
                         }
-
-
                     }
-
 
                 }
 

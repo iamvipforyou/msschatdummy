@@ -13,9 +13,6 @@
         />
 
 
-
-
-
     <item
         android:id="@+id/action_group"
         android:title="New Group"
@@ -26,6 +23,12 @@
     <item
         android:id="@+id/action_setting"
         android:title="Refresh Contatcs"
+        app:showAsAction="never"
+        />
+
+    <item
+        android:id="@+id/action_profile"
+        android:title="Profile"
         app:showAsAction="never"
         />
 

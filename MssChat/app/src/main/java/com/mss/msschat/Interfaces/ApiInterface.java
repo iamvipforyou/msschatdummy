@@ -12,6 +12,7 @@ import com.mss.msschat.Models.RegistrationModel;
 import com.mss.msschat.Models.RegistrationResponse;
 import com.mss.msschat.Models.RemoveGroupUserResponse.RemoveGroupUserResponse;
 import com.mss.msschat.Models.RemoveGrpUserModel;
+import com.mss.msschat.Models.UserDetailsRes.UserDetailsResponse;
 import com.mss.msschat.Models.VerifyContactsModel;
 
 import retrofit2.Call;
@@ -49,6 +50,9 @@ public interface ApiInterface {
 
     @POST("api/removeGroupUsers")
     Call<RemoveGroupUserResponse> removeUserFromGrp(@Body RemoveGrpUserModel removeGrpUserModel);
+
+    @GET("api/getUserDetailById/{userId}")
+    Call<UserDetailsResponse> getUserDetails(@Path("userId") String userId);
 
 
 }

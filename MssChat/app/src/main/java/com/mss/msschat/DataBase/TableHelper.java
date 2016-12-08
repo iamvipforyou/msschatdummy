@@ -49,7 +49,8 @@ public class TableHelper {
         fields.put("rSenderId", "Text PRIMARY KEY ");
         fields.put("rDateTime", "Text");
         fields.put("rTypeMessage", "Text");
-        fields.put("rImage","Text");
+        fields.put("rImage", "Text");
+        fields.put("rCount", "Text");
 
         return fields;
 

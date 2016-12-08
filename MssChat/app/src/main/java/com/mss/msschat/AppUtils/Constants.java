@@ -14,6 +14,9 @@ public class Constants {
     public static final String SOCKET_URL = "http://mastersoftwaretechnologies.com:8023";
     public static final String USERNAME = "mUserName";
 
+    public static final String GROUP_TYPE = "group";
+    public static final String PRIVATE_TYPE = "private";
+
     public static final class DataBaseParms {
 
         public static final String CONTACTS_TABLE = "contatcs";

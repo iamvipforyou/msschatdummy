@@ -34,7 +34,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -44,6 +46,7 @@ import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
 import com.mss.msschat.Activities.MainActivity;
 import com.mss.msschat.R;
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -291,7 +294,7 @@ public class Utils {
                 img.setImageBitmap(myBitmap);
 
 
-              //  releaseBitmap(myBitmap);
+                //  releaseBitmap(myBitmap);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -447,5 +450,44 @@ public class Utils {
 
     public static boolean isMediaDocument(Uri uri) {
         return "com.android.providers.media.documents".equals(uri.getAuthority());
+    }
+
+
+    public static void showImageDialog(Context activity, String image, String mapName) {
+        final Dialog mDialog = new Dialog(activity);
+        mDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        mDialog.setContentView(R.layout.dialog_map);
+        ImageView imgMap = (ImageView) mDialog.findViewById(R.id.img_map);
+        TextView txtHeader = (TextView) mDialog.findViewById(R.id.toolbar_title);
+        LinearLayout llBack = (LinearLayout) mDialog.findViewById(R.id.ll_back);
+        ImageView ibtnBack = (ImageView) mDialog.findViewById(R.id.ibtn_back);
+        mDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        WindowManager.LayoutParams wmlp = mDialog.getWindow().getAttributes();
+        wmlp.gravity = Gravity.CENTER;
+        wmlp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        wmlp.height = WindowManager.LayoutParams.MATCH_PARENT;
+
+        if (!image.isEmpty()) {
+            Picasso.with(activity).load(image).into(imgMap);
+        } else {
+            imgMap.setImageResource(R.mipmap.ic_launcher);
+        }
+
+        txtHeader.setText(mapName);
+        llBack.setVisibility(View.VISIBLE);
+        ibtnBack.setImageResource(R.mipmap.ic_keyboard_backspace_white_24dp);
+        llBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mDialog.dismiss();
+            }
+        });
+        ibtnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mDialog.dismiss();
+            }
+        });
+        mDialog.show();
     }
 }

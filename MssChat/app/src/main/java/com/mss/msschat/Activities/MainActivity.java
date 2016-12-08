@@ -20,7 +20,9 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.mss.msschat.AppUtils.AppPreferences;
 import com.mss.msschat.AppUtils.Connectivity;
+import com.mss.msschat.AppUtils.Constants;
 import com.mss.msschat.AppUtils.Utils;
 import com.mss.msschat.DataBase.Dao.ContactsDao;
 import com.mss.msschat.Fragments.ContactChatFragment;
@@ -172,6 +174,14 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     Utils.showErrorOnTop(viewGroup, "No Internet Connectivity !!");
                 }
+                break;
+            case R.id.action_profile:
+
+                Intent detailsIntent = new Intent(MainActivity.this, FriendProfileActivity.class);
+                detailsIntent.putExtra("userId", new AppPreferences(MainActivity.this).getPrefrenceString(Constants.USER_ID));
+                startActivity(detailsIntent);
+
+
                 break;
 
             default:
