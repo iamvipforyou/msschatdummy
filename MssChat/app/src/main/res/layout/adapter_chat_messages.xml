@@ -33,10 +33,12 @@
                         android:id="@+id/ll_txt_chat_msg"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/bubble1"
+                          android:background="@mipmap/bubble_sender"
                         android:orientation="horizontal"
+                        android:paddingBottom="@dimen/text_size_very_small"
                         android:paddingLeft="@dimen/text_size_small"
-                        android:paddingRight="@dimen/text_size_small">
+                        android:paddingRight="@dimen/text_size_small"
+                        android:paddingTop="@dimen/text_size_very_small">
 
 
                         <FrameLayout
@@ -64,7 +66,6 @@
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_below="@+id/ll_msg_from"
                                 android:layout_gravity="right|bottom"
                                 android:gravity="right"
                                 android:orientation="vertical">
@@ -128,10 +129,12 @@
                               android:layout_width="wrap_content"
                               android:layout_height="wrap_content"
                               android:layout_gravity="right"
-                              android:background="@drawable/bubble2"
+                              android:background="@mipmap/bubble_receiver"
                               android:orientation="vertical"
+                              android:paddingBottom="@dimen/text_size_very_small"
                               android:paddingLeft="@dimen/text_size_small"
-                              android:paddingRight="@dimen/text_size_small">
+                              android:paddingRight="@dimen/text_size_small"
+                              android:paddingTop="@dimen/text_size_very_small">
 
                     <FrameLayout
                         android:layout_width="wrap_content"
@@ -147,7 +150,7 @@
                             <TextView
                                 android:id="@+id/txt_sender_msg"
                                 android:layout_width="wrap_content"
-                                android:layout_height="match_parent"
+                                android:layout_height="wrap_content"
                                 android:layout_marginRight="@dimen/text_size_very_small"
                                 android:text="Adding HTML non-breaking spaces did the trick."
                                 android:textColor="@color/black"

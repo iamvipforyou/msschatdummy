@@ -142,7 +142,9 @@ public class ChatMessageActivity extends AppCompatActivity {
     String senderMessage = null;
     String value = null;
     String typeMessage = null;
-
+    private int notificationCount;
+    String onMessagePicture;
+    String onGrpMessagePicture;
     ///////////////////////
 
     String gUserName = null;
@@ -188,6 +190,18 @@ public class ChatMessageActivity extends AppCompatActivity {
             mIntentFrom = dataIntent.getStringExtra("intentFrom");
             senderOrGrpId = dataIntent.getStringExtra("id");
             typeMessageFrom = dataIntent.getStringExtra("typeMessage");
+
+
+            List<RecentChatDto> getSelectedRecentChat = recentChatDao.getRecentListFriendId(senderOrGrpId);
+            if (getSelectedRecentChat.size() > 0) {
+
+                RecentChatDto recentChatDto = getSelectedRecentChat.get(0);
+                recentChatDto.setMessageCount("0");
+                recentChatDao.insert(recentChatDto);
+
+                Session.getUpdateRecentChat();
+            }
+
 
             if (mIntentFrom.equals("recent")) {
 
@@ -351,7 +365,7 @@ public class ChatMessageActivity extends AppCompatActivity {
                         senderMessage = data.getString("message");
 
                         id = data.getString("userId");
-                        contactImage = data.getString("profilePic");
+                        onMessagePicture = data.getString("profilePic");
                         friendsId = data.getString("userTo");
                         typeMessage = data.getString("typeMessage");
 
@@ -365,7 +379,7 @@ public class ChatMessageActivity extends AppCompatActivity {
                                     public void onFinished(String result) {
 
 
-                                        addMessageToLocal(userName, "@picPath>" + result, "false", senderOrGrpId, typeMessage);
+                                        addMessageToLocal(userName, "@picPath>" + result, "false", senderOrGrpId, typeMessage, onMessagePicture);
 
 
                                     }
@@ -375,7 +389,7 @@ public class ChatMessageActivity extends AppCompatActivity {
                             } else {
 
 
-                                addMessageToLocal(userName, senderMessage, "false", senderOrGrpId, typeMessage);
+                                addMessageToLocal(userName, senderMessage, "false", senderOrGrpId, typeMessage, onMessagePicture);
                             }
 
 
@@ -391,7 +405,7 @@ public class ChatMessageActivity extends AppCompatActivity {
                                     public void onFinished(String result) {
 
 
-                                        addMessageOfOther(userName, "@picPath>" + result, "false", id, typeMessage);
+                                        addMessageOfOther(userName, "@picPath>" + result, "false", id, typeMessage, onMessagePicture);
 
                                         createNotification(userName, "Image");
 
@@ -401,7 +415,7 @@ public class ChatMessageActivity extends AppCompatActivity {
 
                             } else {
 
-                                addMessageOfOther(userName, senderMessage, "false", id, typeMessage);
+                                addMessageOfOther(userName, senderMessage, "false", id, typeMessage, onMessagePicture);
                                 createNotification(userName, senderMessage);
                             }
 
@@ -436,7 +450,7 @@ public class ChatMessageActivity extends AppCompatActivity {
                         gSenderMessage = data.getString("message");
 
                         gId = data.getString("groupId");
-                        contactImage = data.getString("profilePic");
+                        onGrpMessagePicture = data.getString("profilePic");
                         gTypeMessage = data.getString("typeMessage");
 
 
@@ -450,16 +464,16 @@ public class ChatMessageActivity extends AppCompatActivity {
                                     public void onFinished(String result) {
 
 
-                                        addMessageToLocal(gUserName, "@picPath>" + result, "false", senderOrGrpId, gTypeMessage);
+                                        addMessageToLocal(gUserName, "@picPath>" + result, "false", senderOrGrpId, gTypeMessage, onGrpMessagePicture);
 
-                                        createNotification(gUserName, "Image");
+                                        // createNotification(gUserName, "Image");
                                     }
                                 }).execute(gSenderMessage);
 
 
                             } else {
-                                addMessageToLocal(gUserName, gSenderMessage, "false", senderOrGrpId, gTypeMessage);
-                                createNotification(gUserName, gSenderMessage);
+                                addMessageToLocal(gUserName, gSenderMessage, "false", senderOrGrpId, gTypeMessage, onGrpMessagePicture);
+                                //    createNotification(gUserName, gSenderMessage);
                             }
 
 
@@ -473,15 +487,15 @@ public class ChatMessageActivity extends AppCompatActivity {
                                     public void onFinished(String result) {
 
 
-                                        addMessageOfOther(gUserName, "@picPath>" + result, "false", gId, gTypeMessage);
-
+                                        addMessageOfOther(gUserName, "@picPath>" + result, "false", gId, gTypeMessage, onGrpMessagePicture);
+                                        createNotification(gUserName, "Image");
                                     }
                                 }).execute(gSenderMessage);
 
 
                             } else {
-                                addMessageOfOther(gUserName, gSenderMessage, "false", gId, gTypeMessage);
-
+                                addMessageOfOther(gUserName, gSenderMessage, "false", gId, gTypeMessage, onGrpMessagePicture);
+                                createNotification(gUserName, gSenderMessage);
                             }
 
 
@@ -523,7 +537,7 @@ public class ChatMessageActivity extends AppCompatActivity {
 
                     if (mSocket.connected()) {
                         mSocket.emit("message", jMessage);
-                        addMessageToLocal(friendName, message, "true", senderOrGrpId, "private");
+                        addMessageToLocal(friendName, message, "true", senderOrGrpId, "private", contactImage);
                         editMsg.setText("");
                         Session.getUpdateRecentChat();
                     } else {
@@ -540,7 +554,7 @@ public class ChatMessageActivity extends AppCompatActivity {
                     jMessage.put("userName", friendName);
                     if (mSocket.connected()) {
                         mSocket.emit("message", jMessage);
-                        addMessageToLocal(friendName, message, "true", senderOrGrpId, "group");
+                        addMessageToLocal(friendName, message, "true", senderOrGrpId, "group", contactImage);
                         editMsg.setText("");
                         Session.getUpdateRecentChat();
                     } else {
@@ -558,7 +572,7 @@ public class ChatMessageActivity extends AppCompatActivity {
     }
 
 
-    private void addMessageToLocal(String username, String message, String value, String friendid, String messageType) {
+    private void addMessageToLocal(String username, String message, String value, String friendid, String messageType, String contactImage) {
 
         MessageDto messageDto = new MessageDto();
         messageDto.setMessage(message);
@@ -576,6 +590,7 @@ public class ChatMessageActivity extends AppCompatActivity {
         chatMessageModel.setUserName(username);
         chatMessageModel.setDateTime("" + System.currentTimeMillis());
         chatMessageModel.setTypeMessage(messageType);
+
         allMessageList.add(chatMessageModel);
 
 
@@ -602,7 +617,7 @@ public class ChatMessageActivity extends AppCompatActivity {
     }
 
 
-    private void addMessageOfOther(String username, String message, String value, String friendid, String messageType) {
+    private void addMessageOfOther(String username, String message, String value, String friendid, String messageType, String contactImage) {
 
         MessageDto messageDto = new MessageDto();
         messageDto.setMessage(message);
@@ -614,6 +629,15 @@ public class ChatMessageActivity extends AppCompatActivity {
         messageDao.insert(messageDto);
 
 
+        List<RecentChatDto> list1 = recentChatDao.getRecentListFriendId(friendid);
+        if (list1.size() > 0) {
+            notificationCount = Integer.parseInt(list1.get(0).getMessageCount());
+            notificationCount = notificationCount + 1;
+        } else {
+            notificationCount = 0;
+        }
+
+
         RecentChatDto recentChatDto = new RecentChatDto();
         recentChatDto.setSenderId(friendid);
         recentChatDto.setProfileImage(contactImage);
@@ -622,7 +646,8 @@ public class ChatMessageActivity extends AppCompatActivity {
         recentChatDto.setTypeMessage(messageType);
         recentChatDto.setFrom(value);
         recentChatDto.setUserName(username);
-        recentChatDto.setMessageCount("0");
+        recentChatDto.setMessageCount("" + notificationCount);
+
 
         recentChatDao.insert(recentChatDto);
 
@@ -751,7 +776,7 @@ public class ChatMessageActivity extends AppCompatActivity {
 
                 if (mSocket.connected()) {
                     mSocket.emit("message", jMessage);
-                    addMessageToLocal(friendName, "@picPath>" + imagePath, "true", senderOrGrpId, "private");
+                    addMessageToLocal(friendName, "@picPath>" + imagePath, "true", senderOrGrpId, "private", contactImage);
                     editMsg.setText("");
                     Session.getUpdateRecentChat();
                 } else {
@@ -768,7 +793,7 @@ public class ChatMessageActivity extends AppCompatActivity {
                 jMessage.put("userName", friendName);
                 if (mSocket.connected()) {
                     mSocket.emit("message", jMessage);
-                    addMessageToLocal(friendName, "@picPath>" + imagePath, "true", senderOrGrpId, "group");
+                    addMessageToLocal(friendName, "@picPath>" + imagePath, "true", senderOrGrpId, "group", contactImage);
                     editMsg.setText("");
                     Session.getUpdateRecentChat();
                 } else {

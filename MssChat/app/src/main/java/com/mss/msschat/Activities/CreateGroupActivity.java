@@ -118,6 +118,7 @@ public class CreateGroupActivity extends AppCompatActivity {
     private void populateUI() {
 
         Utils.setClassTitle(CreateGroupActivity.this, "New Group", toolbar);
+        Utils.setStatusBarColor(CreateGroupActivity.this);
         viewGroup = (ViewGroup) ((ViewGroup) this.findViewById(android.R.id.content)).getChildAt(0);
     }
 

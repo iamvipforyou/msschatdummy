@@ -16,7 +16,7 @@
     <color name="list_items_color">#1d1b26</color>
     <color name="light_grey">#f3f3f3</color>
     <color name="app_color">#c984a3</color>
-    <color name="status_color">	#aa7285</color>
+    <color name="status_color">#b47692</color>
     <color name="white">#ffffff</color>
     <color name="app_pass_done">#08AE9E</color>
     <color name="progress_back">#FBFBFB</color>
@@ -35,13 +35,6 @@
     <color name="bottom_bar_color">#55646d</color>
     <color name="setup_store_bg">#787878</color>
     <color name="story_hint_color">#BDBDBD</color>
-
-
-
-
-
-
-
 
 
     <color name="black">#000000</color>

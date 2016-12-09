@@ -181,7 +181,7 @@ public class LoginActivity extends AppCompatActivity {
 
                             mSession.setPrefrenceString(Constants.USER_ID, userData.getId());
 
-                            Toast.makeText(LoginActivity.this, "" + userData.getId(), Toast.LENGTH_SHORT).show();
+                         //   Toast.makeText(LoginActivity.this, "" + userData.getId(), Toast.LENGTH_SHORT).show();
 
                             startService(new Intent(LoginActivity.this, ContactFirstSyncIntentService.class));
                             Intent mainIntent = new Intent(LoginActivity.this, SetPatternActivity.class);

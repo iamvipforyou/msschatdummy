@@ -50,66 +50,70 @@ public class RecentChatAdapter extends RecyclerView.Adapter<RecentChatAdapter.Vi
 
     @Override
     public void onBindViewHolder(RecentChatAdapter.ViewHolder holder, int position) {
-        final RecentChatDto recentChatModel = recentChatModelArrayList.get(position);
-        holder.txtName.setText(recentChatModel.getUserName());
+        try {
+            final RecentChatDto recentChatModel = recentChatModelArrayList.get(position);
+            holder.txtName.setText(recentChatModel.getUserName());
 
 
-        if (recentChatModel.getMessage().contains("@picPath>")) {
-            holder.txtChatMessage.setText("Image");
-        } else {
-            holder.txtChatMessage.setText(recentChatModel.getMessage());
-        }
+            if (recentChatModel.getMessage().contains("@picPath>")) {
+                holder.txtChatMessage.setText("Image");
+            } else {
+                holder.txtChatMessage.setText(recentChatModel.getMessage());
+            }
 
 
-        GlideDrawableImageViewTarget imageViewTarget = new GlideDrawableImageViewTarget(holder.imgProfile);
+            GlideDrawableImageViewTarget imageViewTarget = new GlideDrawableImageViewTarget(holder.imgProfile);
 
      /*   if (recentChatModel.getProfileImage() != null) {
             Glide.with(mContext).load(recentChatModel.getProfileImage()).into(imageViewTarget);
         } else {
             Glide.with(mContext).load(R.mipmap.ic_launcher).into(imageViewTarget);
         }*/
-        holder.txtDate.setText(Utils.getTimeAgo(Long.parseLong(recentChatModel.getDateTime())));
+            holder.txtDate.setText(Utils.getTimeAgo(Long.parseLong(recentChatModel.getDateTime())));
 
 
-        if (recentChatModel.isSELECTED()) {
+            if (recentChatModel.isSELECTED()) {
 
-            holder.imgProfile.setImageResource(R.drawable.tick_icon);
-        } else {
-
-
-            if (recentChatModel.getProfileImage() != null) {
-                Glide.with(mContext).load(recentChatModel.getProfileImage()).into(imageViewTarget);
+                holder.imgProfile.setImageResource(R.drawable.tick_icon);
             } else {
-                Glide.with(mContext).load(R.mipmap.ic_launcher).into(imageViewTarget);
+
+
+                if (recentChatModel.getProfileImage() != null) {
+                    Glide.with(mContext).load(recentChatModel.getProfileImage()).into(imageViewTarget);
+                } else {
+                    Glide.with(mContext).load(R.mipmap.ic_launcher).into(imageViewTarget);
+                }
+
             }
 
-        }
+
+            if (recentChatModel.isSELECTED() == false) {
+                holder.imgProfile.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
 
 
-        if (recentChatModel.isSELECTED() == false) {
-            holder.imgProfile.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+                        Utils.showImageDialog(mContext, recentChatModel.getProfileImage(), recentChatModel.getUserName());
+
+                    }
+                });
 
 
-                    Utils.showImageDialog(mContext, recentChatModel.getProfileImage(), recentChatModel.getUserName());
+            }
 
-                }
-            });
+            if (recentChatModel.getMessageCount().equals("0")) {
 
+                holder.txtBadge.setVisibility(View.GONE);
 
-        }
+            } else {
 
-        if (recentChatModel.getMessageCount().equals("0")) {
-
-            holder.txtBadge.setVisibility(View.GONE);
-
-        } else {
-
-            holder.txtBadge.setVisibility(View.VISIBLE);
-            holder.txtBadge.setText("" + recentChatModel.getMessageCount());
+                holder.txtBadge.setVisibility(View.VISIBLE);
+                holder.txtBadge.setText("" + recentChatModel.getMessageCount());
 
 
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
 
