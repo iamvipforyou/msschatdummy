@@ -20,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.mss.msschat.AppUtils.ApiClient;
 import com.mss.msschat.AppUtils.AppPreferences;
 import com.mss.msschat.AppUtils.Constants;
@@ -224,6 +225,20 @@ public class GroupDetailsActivity extends AppCompatActivity {
             TextView txtMemberContact = (TextView) displayParticipants.findViewById(R.id.txt_contact_number);
             txtMemberContact.setText("" + participentList.get(count).getPhoneNumber());
 
+            ImageView imgProfile = (ImageView) displayParticipants.findViewById(R.id.img_contact_profile);
+
+
+            if (participentList.get(count).getProfilePic() != null) {
+
+
+                Glide.with(getApplicationContext()).load(participentList.get(count).getProfilePic()).into(imgProfile);
+
+
+            } else {
+
+                imgProfile.setImageResource(R.mipmap.ic_launcher);
+            }
+
 
             llParticipants.addView(displayParticipants);
 
@@ -261,7 +276,7 @@ public class GroupDetailsActivity extends AppCompatActivity {
 
         if (id == R.id.action_settings) {
 
-               showDeleteGroupDialog();
+            showDeleteGroupDialog();
 
 
         }

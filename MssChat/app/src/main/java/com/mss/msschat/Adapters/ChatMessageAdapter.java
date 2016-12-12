@@ -48,7 +48,7 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
     public void onBindViewHolder(ChatMessageAdapter.ViewHolder holder, int position) {
 
 
-        ChatMessageModel chatMessageModel = dataList.get(position);
+        final ChatMessageModel chatMessageModel = dataList.get(position);
 
 
         if (chatMessageModel.getFrom().equals("true")) {
@@ -63,7 +63,7 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
                 String[] completePath = imageMessage.split(">");
 
 
-                String picturePath = completePath[1];
+                final String picturePath = completePath[1];
 
 
                 holder.llUser.setVisibility(View.GONE);
@@ -74,6 +74,16 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
                 holder.txtSenderTime.setText(Utils.getTimeAgo(Long.parseLong(chatMessageModel.getDateTime())));
                 Glide.with(mContext).load(new File(picturePath)).into(holder.iVSender);
                 //  Utils.loadAllImageFromStorage(holder.iVSender, picturePath);
+
+
+                holder.iVSender.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+
+                        Utils.showImageChatDialog(mContext, picturePath, chatMessageModel.getUserName());
+                    }
+                });
 
 
             } else {
@@ -97,11 +107,9 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
 
                 String[] completePath = imageMessage.split(">");
 
-                String picturePath = completePath[1];
+                final String picturePath = completePath[1];
 
                 ///////////////////////////
-
-
 
 
                 ///////////////////////
@@ -114,6 +122,16 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<ChatMessageAdapter.
                 holder.txtReceiverTime.setText(Utils.getTimeAgo(Long.parseLong(chatMessageModel.getDateTime())));
 
                 Glide.with(mContext).load(new File(picturePath)).into(holder.iVMessage);
+
+
+                holder.iVMessage.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+
+                        Utils.showImageChatDialog(mContext, picturePath, chatMessageModel.getUserName());
+                    }
+                });
 
 
             } else {

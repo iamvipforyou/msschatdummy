@@ -23,6 +23,7 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import com.mss.msschat.AppUtils.AppPreferences;
 import com.mss.msschat.AppUtils.Connectivity;
 import com.mss.msschat.AppUtils.Constants;
+import com.mss.msschat.AppUtils.Session;
 import com.mss.msschat.AppUtils.Utils;
 import com.mss.msschat.DataBase.Dao.ContactsDao;
 import com.mss.msschat.Fragments.ContactChatFragment;
@@ -118,6 +119,11 @@ public class MainActivity extends AppCompatActivity {
                 public boolean onQueryTextChange(String newText) {
                     Log.i("onQueryTextChange", newText);
 
+                    String userName = newText;
+
+                    Session.getSearchRecent(userName);
+                    Session.getSearchContacts(userName);
+
 
                     return true;
                 }
@@ -125,6 +131,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public boolean onQueryTextSubmit(String query) {
                     Log.i("onQueryTextSubmit", query);
+
                     return true;
                 }
             };

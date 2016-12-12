@@ -22,6 +22,8 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
@@ -136,6 +138,8 @@ public class ChatMessageActivity extends AppCompatActivity {
     private Bitmap imgBitmap;
     private String userImage;
     private String imagePath;
+
+    TextView mtxtStatus;
     /////////////////////////////
     String userName = null;
     String id = null;
@@ -152,8 +156,12 @@ public class ChatMessageActivity extends AppCompatActivity {
     String gSenderMessage = null;
     String gTypeMessage = null;
 
-
+    private static final int TYPING_TIMER_LENGTH = 600;
     ////////////
+
+    private boolean mTyping = false;
+    private Handler mTypingHandler = new Handler();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -168,6 +176,7 @@ public class ChatMessageActivity extends AppCompatActivity {
         ll_txtTitles = (LinearLayout) findViewById(R.id.ll_title);
         mSession = new AppPreferences(ChatMessageActivity.this);
         messageDao = new MessageDao(ChatMessageActivity.this);
+        mtxtStatus = (TextView) findViewById(R.id.txt_time);
         openSocket();
         populateUI();
     }
@@ -264,7 +273,7 @@ public class ChatMessageActivity extends AppCompatActivity {
         }
 
 
-        adapter = new ChatMessageAdapter(getApplicationContext(), allMessageList);
+        adapter = new ChatMessageAdapter(ChatMessageActivity.this, allMessageList);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         lvChatMessages.setLayoutManager(layoutManager);
         lvChatMessages.setItemAnimator(new DefaultItemAnimator());
@@ -273,6 +282,36 @@ public class ChatMessageActivity extends AppCompatActivity {
 
             scrollToBottom();
         }
+
+
+        editMsg.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                if (!mSocket.connected())
+                    return;
+
+                if (!mTyping) {
+                    mTyping = true;
+                    mSocket.emit("typing");
+                }
+
+                mTypingHandler.removeCallbacks(onTypingTimeout);
+                mTypingHandler.postDelayed(onTypingTimeout, TYPING_TIMER_LENGTH);
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
 
 
     }
@@ -285,8 +324,14 @@ public class ChatMessageActivity extends AppCompatActivity {
             mSocket.on("init", onInit);
             mSocket.on("message", onNewMessage);
             mSocket.on("groupMsg", onGroupMessage);
+
             mSocket.connect();
             mSocket.emit("init", mSession.getPrefrenceString(Constants.USER_ID));
+            mSocket.on("isUserStatus", getUserStatus);
+            mSocket.emit("isUserStatus", senderOrGrpId);
+            mSocket.on("onlineUser", userOnlineStatus);
+            mSocket.on("offlineUser", userOfflineStatus);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -391,7 +436,7 @@ public class ChatMessageActivity extends AppCompatActivity {
 
                                 addMessageToLocal(userName, senderMessage, "false", senderOrGrpId, typeMessage, onMessagePicture);
                             }
-
+                            removeTyping(senderOrGrpId);
 
                         } else {
 
@@ -664,6 +709,9 @@ public class ChatMessageActivity extends AppCompatActivity {
         mSocket.off("init", onInit);
         mSocket.off("message", onNewMessage);
         mSocket.off("groupMsg", onGroupMessage);
+        mSocket.off("isUserStatus", getUserStatus);
+        mSocket.off("onlineUser", userOnlineStatus);
+        mSocket.off("offlineUser", userOfflineStatus);
 
     }
 
@@ -848,6 +896,9 @@ public class ChatMessageActivity extends AppCompatActivity {
         mSocket.off("init", onInit);
         mSocket.off("message", onNewMessage);
         mSocket.off("groupMsg", onGroupMessage);
+        mSocket.off("isUserStatus", getUserStatus);
+        mSocket.off("onlineUser", userOnlineStatus);
+        mSocket.off("offlineUser", userOfflineStatus);
 
     }
 
@@ -860,7 +911,9 @@ public class ChatMessageActivity extends AppCompatActivity {
         mSocket.off("init", onInit);
         mSocket.off("message", onNewMessage);
         mSocket.off("groupMsg", onGroupMessage);
-
+        mSocket.off("isUserStatus", getUserStatus);
+        mSocket.off("onlineUser", userOnlineStatus);
+        mSocket.off("offlineUser", userOfflineStatus);
 
     }
 
@@ -985,6 +1038,124 @@ public class ChatMessageActivity extends AppCompatActivity {
 
 
     }
+
+    private Runnable onTypingTimeout = new Runnable() {
+        @Override
+        public void run() {
+            if (!mTyping)
+                return;
+
+            mTyping = false;
+            mSocket.emit("stop typing");
+        }
+    };
+
+
+    private void removeTyping(String username) {
+
+
+    }
+
+
+    private void addTyping(String username) {
+
+    }
+
+    private Emitter.Listener getUserStatus = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+
+
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+
+
+                    try {
+
+                        JSONObject data = (JSONObject) args[0];
+
+
+                        String status = data.getString("status");
+
+                        mtxtStatus.setText(status);
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+
+                }
+            });
+
+        }
+    };
+
+
+    private Emitter.Listener userOnlineStatus = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+
+
+                    try {
+
+                        JSONObject data = (JSONObject) args[0];
+
+
+                        String status = data.getString("id");
+
+                        if (status.equals(senderOrGrpId)) {
+                            mtxtStatus.setText("online");
+                        }
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+
+                }
+            });
+
+
+        }
+    };
+
+
+    private Emitter.Listener userOfflineStatus = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+
+
+                    try {
+
+                        JSONObject data = (JSONObject) args[0];
+
+
+                        String status = data.getString("id");
+
+                        if (status.equals(senderOrGrpId)) {
+                            mtxtStatus.setText("offline");
+                        }
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+
+                }
+            });
+
+
+        }
+    };
 
 
 }

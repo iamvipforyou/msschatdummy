@@ -33,7 +33,7 @@
                         android:id="@+id/ll_txt_chat_msg"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                          android:background="@mipmap/bubble_sender"
+                        android:background="@mipmap/rightp"
                         android:orientation="horizontal"
                         android:paddingBottom="@dimen/text_size_very_small"
                         android:paddingLeft="@dimen/text_size_small"
@@ -43,11 +43,12 @@
 
                         <FrameLayout
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content">
+                            android:layout_height="wrap_content"
+                            >
 
                             <LinearLayout
                                 android:id="@+id/ll_msg_from"
-                                android:layout_width="match_parent"
+                                android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:orientation="vertical"
                                 android:paddingBottom="@dimen/text_size_middle">
@@ -57,7 +58,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="match_parent"
                                     android:layout_marginLeft="@dimen/text_size_very_small"
-                                    android:text="Adding HTML non-breaking spaces did the trick. Tested the code on most devices and working absolutely fine. Maybe whatsapp is also doing the same thing"
+                                    android:text="dhdhfddfgfdfgfgdfgfdgdfgdfgfgfgfgdfgfgfgfddfbfdbdfbddvf"
                                     android:textColor="@color/black"
                                     android:textSize="@dimen/text_size_midnormal"></TextView>
 
@@ -129,7 +130,7 @@
                               android:layout_width="wrap_content"
                               android:layout_height="wrap_content"
                               android:layout_gravity="right"
-                              android:background="@mipmap/bubble_receiver"
+                              android:background="@mipmap/left"
                               android:orientation="vertical"
                               android:paddingBottom="@dimen/text_size_very_small"
                               android:paddingLeft="@dimen/text_size_small"
@@ -152,7 +153,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginRight="@dimen/text_size_very_small"
-                                android:text="Adding HTML non-breaking spaces did the trick."
+                                android:text="Asfvscsdvsdvsdvsdvsdvsdvsdvxvcbdgbdfgbdfgbsdfbf."
                                 android:textColor="@color/black"
                                 android:textSize="@dimen/text_size_midnormal"></TextView>
 

@@ -120,6 +120,22 @@ public class CreateGroupActivity extends AppCompatActivity {
         Utils.setClassTitle(CreateGroupActivity.this, "New Group", toolbar);
         Utils.setStatusBarColor(CreateGroupActivity.this);
         viewGroup = (ViewGroup) ((ViewGroup) this.findViewById(android.R.id.content)).getChildAt(0);
+
+        llBack.setVisibility(View.VISIBLE);
+        ibtnBack.setImageResource(R.mipmap.ic_keyboard_backspace_white_24dp);
+        ibtnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+        llBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                finish();
+            }
+        });
     }
 
 

@@ -42,6 +42,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.androidadvance.topsnackbar.TSnackbar;
+import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
 import com.mss.msschat.Activities.MainActivity;
@@ -469,6 +470,46 @@ public class Utils {
 
         if (!image.isEmpty()) {
             Picasso.with(activity).load(image).into(imgMap);
+        } else {
+            imgMap.setImageResource(R.mipmap.ic_launcher);
+        }
+
+        txtHeader.setText(mapName);
+        llBack.setVisibility(View.VISIBLE);
+        ibtnBack.setImageResource(R.mipmap.ic_keyboard_backspace_white_24dp);
+        llBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mDialog.dismiss();
+            }
+        });
+        ibtnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mDialog.dismiss();
+            }
+        });
+        mDialog.show();
+    }
+
+
+    public static void showImageChatDialog(Context activity, String image, String mapName) {
+
+        final Dialog mDialog = new Dialog(activity);
+        mDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        mDialog.setContentView(R.layout.dialog_chat_image);
+        ImageView imgMap = (ImageView) mDialog.findViewById(R.id.img_map);
+        TextView txtHeader = (TextView) mDialog.findViewById(R.id.toolbar_title);
+        LinearLayout llBack = (LinearLayout) mDialog.findViewById(R.id.ll_back);
+        ImageView ibtnBack = (ImageView) mDialog.findViewById(R.id.ibtn_back);
+        mDialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        WindowManager.LayoutParams wmlp = mDialog.getWindow().getAttributes();
+        wmlp.gravity = Gravity.CENTER;
+        wmlp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        wmlp.height = WindowManager.LayoutParams.MATCH_PARENT;
+
+        if (!image.isEmpty()) {
+            Glide.with(activity).load(new File(image)).into(imgMap);
         } else {
             imgMap.setImageResource(R.mipmap.ic_launcher);
         }

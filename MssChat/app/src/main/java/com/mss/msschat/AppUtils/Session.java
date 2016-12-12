@@ -1,6 +1,8 @@
 package com.mss.msschat.AppUtils;
 
+import com.mss.msschat.Interfaces.SearchContacts;
 import com.mss.msschat.Interfaces.UpdateRecentChats;
+import com.mss.msschat.Interfaces.searchRecent;
 import com.mss.msschat.Interfaces.updateContacts;
 
 /**
@@ -14,6 +16,10 @@ public class Session {
 
     private static updateContacts mUpdateContacts;
 
+    private static searchRecent mSearchRecent;
+
+
+    private static SearchContacts mSearchContacts;
 
     public static void setUpdateRecentChats(UpdateRecentChats listner) {
 
@@ -50,6 +56,45 @@ public class Session {
 
             mUpdateContacts.updateContactList();
         }
+    }
+
+
+    public static void setmSearchRecent(searchRecent listner) {
+
+        if (listner != null) {
+
+            mSearchRecent = listner;
+        }
+
+
+    }
+
+
+    public static void getSearchRecent(String username) {
+
+        if (mSearchRecent != null) {
+
+            mSearchRecent.searchInRecentChat(username);
+        }
+
+    }
+
+    public static void setmSearchContacts(SearchContacts listner) {
+
+        if (listner != null) {
+
+            mSearchContacts = listner;
+
+        }
+    }
+
+    public static void getSearchContacts(String userName) {
+
+        if (mSearchContacts != null) {
+
+            mSearchContacts.searchInContactsList(userName);
+        }
+
     }
 
 }

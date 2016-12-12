@@ -19,6 +19,8 @@ import com.mss.msschat.Adapters.ContactsAdapter;
 import com.mss.msschat.AppUtils.Session;
 import com.mss.msschat.DataBase.Dao.ContactsDao;
 import com.mss.msschat.DataBase.Dto.ContactsDto;
+import com.mss.msschat.DataBase.Dto.RecentChatDto;
+import com.mss.msschat.Interfaces.SearchContacts;
 import com.mss.msschat.Interfaces.updateContacts;
 import com.mss.msschat.Models.ContactListModel;
 import com.mss.msschat.R;
@@ -27,12 +29,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by mss on 23/11/16.
  */
 
-public class ContactChatFragment extends Fragment implements updateContacts {
+public class ContactChatFragment extends Fragment implements updateContacts, SearchContacts {
 
     View rootView;
     Cursor cursor;
@@ -43,6 +46,7 @@ public class ContactChatFragment extends Fragment implements updateContacts {
     private Handler updateBarHandler;
     ContactsAdapter adapter;
     ContactsDao contactsDao;
+    List<ContactsDto> mAllData = new ArrayList<ContactsDto>();
 
 
     List<ContactsDto> allUserFromContactList;
@@ -58,6 +62,7 @@ public class ContactChatFragment extends Fragment implements updateContacts {
         lvContacts = (RecyclerView) rootView.findViewById(R.id.lv_contacts);
         contactsDao = new ContactsDao(getActivity());
         Session.setmUpdateContacts(this);
+        Session.setmSearchContacts(this);
         //  setUpContacts();
 
 
@@ -70,7 +75,7 @@ public class ContactChatFragment extends Fragment implements updateContacts {
 
 
         allUserFromContactList = contactsDao.getAllAppContacts();
-
+        mAllData = contactsDao.getAllAppContacts();
 
         // Collections.sort(contactList, new SortBasedOnName());
         adapter = new ContactsAdapter(getActivity(), allUserFromContactList);
@@ -163,11 +168,43 @@ public class ContactChatFragment extends Fragment implements updateContacts {
 
     }
 
+    @Override
+    public void searchInContactsList(final String userName) {
+
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+
+                filter(userName);
+
+            }
+        });
+
+    }
+
     public class SortBasedOnName implements Comparator {
         public int compare(Object o1, Object o2) {
             ContactListModel contactSortList1 = (ContactListModel) o1;
             ContactListModel contactSortList2 = (ContactListModel) o2;
             return contactSortList1.getName().compareToIgnoreCase(contactSortList2.getName());
         }
+    }
+
+
+    public void filter(String charText) {
+        charText = charText.toLowerCase(Locale.getDefault());
+        allUserFromContactList.clear();
+        if (charText.length() == 0) {
+            allUserFromContactList.addAll(mAllData);
+            Collections.reverse(allUserFromContactList);
+
+        } else {
+            for (ContactsDto wp : mAllData) {
+                if (wp.getUserName().toLowerCase(Locale.getDefault()).contains(charText)) {
+                    allUserFromContactList.add(wp);
+                }
+            }
+        }
+        adapter.notifyDataSetChanged();
     }
 }

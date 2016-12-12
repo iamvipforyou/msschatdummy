@@ -18,17 +18,20 @@ import com.mss.msschat.DataBase.Dao.RecentChatDao;
 import com.mss.msschat.DataBase.Dto.RecentChatDto;
 import com.mss.msschat.Interfaces.DeleteSelectedRecent;
 import com.mss.msschat.Interfaces.UpdateRecentChats;
+import com.mss.msschat.Interfaces.searchRecent;
 import com.mss.msschat.Models.RecentChatModel;
 import com.mss.msschat.R;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by mss on 23/11/16.
  */
 
-public class RecentChatFragment extends Fragment implements UpdateRecentChats, DeleteSelectedRecent {
+public class RecentChatFragment extends Fragment implements UpdateRecentChats, DeleteSelectedRecent, searchRecent {
 
     View rootView;
     RecyclerView lvRecentChat;
@@ -36,6 +39,8 @@ public class RecentChatFragment extends Fragment implements UpdateRecentChats, D
     List<RecentChatDto> recentChatDataList;
     FloatingActionButton btnDelete;
     List<RecentChatDto> allSelectedChatList;
+
+    List<RecentChatDto> mAllData = new ArrayList<RecentChatDto>();
     private int count;
 
     @Override
@@ -49,6 +54,7 @@ public class RecentChatFragment extends Fragment implements UpdateRecentChats, D
         lvRecentChat = (RecyclerView) rootView.findViewById(R.id.lv_recent_chat);
         btnDelete = (FloatingActionButton) rootView.findViewById(R.id.btn_delete);
         Session.setUpdateRecentChats(this);
+        Session.setmSearchRecent(this);
         populateUI();
     }
 
@@ -62,7 +68,7 @@ public class RecentChatFragment extends Fragment implements UpdateRecentChats, D
 
 
         recentChatDataList = recentChatDao.getAllRecentMessages();
-
+        mAllData = recentChatDao.getAllRecentMessages();
 
         adapter = new RecentChatAdapter(getActivity(), recentChatDataList, this);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
@@ -142,6 +148,37 @@ public class RecentChatFragment extends Fragment implements UpdateRecentChats, D
         } else {
             btnDelete.setVisibility(View.GONE);
         }
+
+    }
+
+
+    public void filter(String charText) {
+        charText = charText.toLowerCase(Locale.getDefault());
+        recentChatDataList.clear();
+        if (charText.length() == 0) {
+            recentChatDataList.addAll(mAllData);
+            Collections.reverse(recentChatDataList);
+
+        } else {
+            for (RecentChatDto wp : mAllData) {
+                if (wp.getUserName().toLowerCase(Locale.getDefault()).contains(charText)) {
+                    recentChatDataList.add(wp);
+                }
+            }
+        }
+        adapter.notifyDataSetChanged();
+    }
+
+
+    @Override
+    public void searchInRecentChat(final String userName) {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                filter(userName);
+            }
+        });
+
 
     }
 }
