@@ -33,7 +33,7 @@
                         android:id="@+id/ll_txt_chat_msg"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@mipmap/rightp"
+                        android:background="@mipmap/bubble_yellow"
                         android:orientation="horizontal"
                         android:paddingBottom="@dimen/text_size_very_small"
                         android:paddingLeft="@dimen/text_size_small"
@@ -42,7 +42,7 @@
 
 
                         <FrameLayout
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             >
 
@@ -58,7 +58,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="match_parent"
                                     android:layout_marginLeft="@dimen/text_size_very_small"
-                                    android:text="dhdhfddfgfdfgfgdfgfdgdfgdfgfgfgfgdfgfgfgfddfbfdbdfbddvf"
+                                    android:text="dddddddddddddd"
                                     android:textColor="@color/black"
                                     android:textSize="@dimen/text_size_midnormal"></TextView>
 
@@ -130,7 +130,7 @@
                               android:layout_width="wrap_content"
                               android:layout_height="wrap_content"
                               android:layout_gravity="right"
-                              android:background="@mipmap/left"
+                              android:background="@mipmap/bubble_green"
                               android:orientation="vertical"
                               android:paddingBottom="@dimen/text_size_very_small"
                               android:paddingLeft="@dimen/text_size_small"
@@ -138,7 +138,7 @@
                               android:paddingTop="@dimen/text_size_very_small">
 
                     <FrameLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
                         <LinearLayout
@@ -153,7 +153,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginRight="@dimen/text_size_very_small"
-                                android:text="Asfvscsdvsdvsdvsdvsdvsdvsdvxvcbdgbdfgbdfgbsdfbf."
+                                android:text="sf."
                                 android:textColor="@color/black"
                                 android:textSize="@dimen/text_size_midnormal"></TextView>
 
@@ -163,7 +163,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="right|bottom"
-                            android:layout_marginRight="@dimen/text_size_normal"
+                            android:layout_marginRight="@dimen/text_size_very_small"
                             android:gravity="right"
                             android:orientation="vertical">
 

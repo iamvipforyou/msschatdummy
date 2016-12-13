@@ -283,6 +283,7 @@ public class MainActivity extends AppCompatActivity {
 
         mSocket.off("message", onNewMessage);
         mSocket.off("groupMsg", onGroupMessage);
+       mSocket.disconnect();
     }
 
     @Override
@@ -291,7 +292,7 @@ public class MainActivity extends AppCompatActivity {
 
         mSocket.off("message", onNewMessage);
         mSocket.off("groupMsg", onGroupMessage);
-
+        mSocket.disconnect();
     }
 
 
@@ -299,8 +300,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        mSocket.on("message", onNewMessage);
-        mSocket.on("groupMsg", onGroupMessage);
+      //  mSocket.on("message", onNewMessage);
+     //   mSocket.on("groupMsg", onGroupMessage);
+    //    mSocket.connect();
 
     }
 
