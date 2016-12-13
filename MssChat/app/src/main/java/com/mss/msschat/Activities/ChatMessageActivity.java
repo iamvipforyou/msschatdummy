@@ -138,7 +138,6 @@ public class ChatMessageActivity extends AppCompatActivity {
     private Bitmap imgBitmap;
     private String userImage;
     private String imagePath;
-
     TextView mtxtStatus;
     /////////////////////////////
     String userName = null;
@@ -150,15 +149,12 @@ public class ChatMessageActivity extends AppCompatActivity {
     String onMessagePicture;
     String onGrpMessagePicture;
     ///////////////////////
-
     String gUserName = null;
     String gId = null;
     String gSenderMessage = null;
     String gTypeMessage = null;
-
     private static final int TYPING_TIMER_LENGTH = 600;
     ////////////
-
     private boolean mTyping = false;
     private Handler mTypingHandler = new Handler();
 
@@ -171,7 +167,6 @@ public class ChatMessageActivity extends AppCompatActivity {
     }
 
     private void initUI() {
-
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         ll_txtTitles = (LinearLayout) findViewById(R.id.ll_title);
         mSession = new AppPreferences(ChatMessageActivity.this);
@@ -182,7 +177,6 @@ public class ChatMessageActivity extends AppCompatActivity {
     }
 
     private void populateUI() {
-
       /*  toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -193,71 +187,51 @@ public class ChatMessageActivity extends AppCompatActivity {
         Utils.setStatusBarColor(ChatMessageActivity.this);
         recentChatDao = new RecentChatDao(ChatMessageActivity.this);
         try {
-
             Intent dataIntent = getIntent();
-
             mIntentFrom = dataIntent.getStringExtra("intentFrom");
             senderOrGrpId = dataIntent.getStringExtra("id");
+            mSocket.emit("isUserStatus", senderOrGrpId);
             typeMessageFrom = dataIntent.getStringExtra("typeMessage");
+            if (typeMessageFrom.equals(Constants.GROUP_TYPE)) {
+
+                mtxtStatus.setVisibility(View.GONE);
+            } else {
+                mtxtStatus.setVisibility(View.VISIBLE);
+            }
 
 
             List<RecentChatDto> getSelectedRecentChat = recentChatDao.getRecentListFriendId(senderOrGrpId);
             if (getSelectedRecentChat.size() > 0) {
-
                 RecentChatDto recentChatDto = getSelectedRecentChat.get(0);
                 recentChatDto.setMessageCount("0");
                 recentChatDao.insert(recentChatDto);
-
                 Session.getUpdateRecentChat();
             }
-
-
             if (mIntentFrom.equals("recent")) {
-
-
                 recentChatListById = recentChatDao.getRecentListFriendId(senderOrGrpId);
                 friendName = recentChatListById.get(0).getUserName();
                 toolbarTitle.setText(friendName);
-
                 contactImage = recentChatListById.get(0).getProfileImage();
                 if (recentChatListById.get(0).getProfileImage() != null) {
                     Picasso.with(ChatMessageActivity.this).load(recentChatListById.get(0).getProfileImage()).into(imgProfile);
-
                 } else {
-
                     Picasso.with(ChatMessageActivity.this).load(R.mipmap.ic_launcher).into(imgProfile);
                 }
-
-
             } else if (mIntentFrom.equals("contacts")) {
-
                 friendName = dataIntent.getStringExtra("user_name");
                 contactImage = dataIntent.getStringExtra("user_image");
-
-
                 toolbarTitle.setText(friendName);
                 if (contactImage != null) {
-
                     Picasso.with(ChatMessageActivity.this).load(contactImage).into(imgProfile);
                 } else {
-
                     Picasso.with(ChatMessageActivity.this).load(R.mipmap.ic_launcher).into(imgProfile);
                 }
-
-
             }
-
-
             //
-
-
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
         allMessageList = new ArrayList<ChatMessageModel>();
-
         ArrayList<MessageDto> messageDtoArrayList = messageDao.getAllMessagesUser(senderOrGrpId);
         ChatMessageModel messageModel;
         for (int i = 0; i < messageDtoArrayList.size(); i++) {
@@ -268,42 +242,40 @@ public class ChatMessageActivity extends AppCompatActivity {
             messageModel.setTypeMessage(messageDtoArrayList.get(i).getTypeMessage());
             messageModel.setDateTime(messageDtoArrayList.get(i).getDateTime());
             messageModel.setSenderId(messageDtoArrayList.get(i).getSenderId());
-
             allMessageList.add(messageModel);
         }
-
-
         adapter = new ChatMessageAdapter(ChatMessageActivity.this, allMessageList);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         lvChatMessages.setLayoutManager(layoutManager);
         lvChatMessages.setItemAnimator(new DefaultItemAnimator());
         lvChatMessages.setAdapter(adapter);
         if (allMessageList.size() != 0) {
-
             scrollToBottom();
         }
-
-
         editMsg.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
 
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                try {
+                    if (!mSocket.connected())
+                        return;
 
-                if (!mSocket.connected())
-                    return;
+                    if (!mTyping) {
+                        mTyping = true;
+                        JSONObject userTyping = new JSONObject();
+                        userTyping.put("id", mSession.getPrefrenceString(Constants.USER_ID));
+                        mSocket.emit("typingEvent", userTyping);
+                    }
 
-                if (!mTyping) {
-                    mTyping = true;
-                    mSocket.emit("typing");
+                    mTypingHandler.removeCallbacks(onTypingTimeout);
+                    mTypingHandler.postDelayed(onTypingTimeout, TYPING_TIMER_LENGTH);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-
-                mTypingHandler.removeCallbacks(onTypingTimeout);
-                mTypingHandler.postDelayed(onTypingTimeout, TYPING_TIMER_LENGTH);
 
             }
 
@@ -316,7 +288,6 @@ public class ChatMessageActivity extends AppCompatActivity {
 
     }
 
-
     private void openSocket() {
         try {
             appController = new AppController();
@@ -324,14 +295,14 @@ public class ChatMessageActivity extends AppCompatActivity {
             mSocket.on("init", onInit);
             mSocket.on("message", onNewMessage);
             mSocket.on("groupMsg", onGroupMessage);
-
             mSocket.connect();
             mSocket.emit("init", mSession.getPrefrenceString(Constants.USER_ID));
             mSocket.on("isUserStatus", getUserStatus);
-            mSocket.emit("isUserStatus", senderOrGrpId);
+
             mSocket.on("onlineUser", userOnlineStatus);
             mSocket.on("offlineUser", userOfflineStatus);
-
+            mSocket.on("typingEvent", onUserTyping);
+            mSocket.on("userStopTyping", onTypingStops);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -350,33 +321,22 @@ public class ChatMessageActivity extends AppCompatActivity {
                     Intent detailsIntent = new Intent(ChatMessageActivity.this, FriendProfileActivity.class);
                     detailsIntent.putExtra("userId", senderOrGrpId);
                     startActivity(detailsIntent);
-
-
                 }
-
                 break;
-
             case R.id.ll_btn_send:
                 attemptSend();
                 break;
-
             case R.id.ibtn_back:
-
                 finish();
-
                 break;
             case R.id.ll_back:
                 finish();
                 break;
             case R.id.ll_camera:
-
                 changeProfile();
                 break;
         }
-
-
     }
-
 
     private Emitter.Listener onInit = new Emitter.Listener() {
         @Override
@@ -389,7 +349,6 @@ public class ChatMessageActivity extends AppCompatActivity {
             });
         }
     };
-
     private Emitter.Listener onNewMessage = new Emitter.Listener() {
         @Override
         public void call(final Object... args) {
@@ -398,170 +357,101 @@ public class ChatMessageActivity extends AppCompatActivity {
                 public void run() {
                     try {
                         JSONObject data = (JSONObject) args[0];
-
                         Log.e("data", data + "");
-                       /* String userName = null;
-                        String id = null;
-                        String senderMessage = null;
-                        String value = null;
-                        String typeMessage = null;*/
                         friendsId = null;
                         userName = data.getString("userName");
                         senderMessage = data.getString("message");
-
                         id = data.getString("userId");
                         onMessagePicture = data.getString("profilePic");
                         friendsId = data.getString("userTo");
                         typeMessage = data.getString("typeMessage");
-
-
                         if (id.equals(senderOrGrpId)) {
-
                             if (senderMessage.contains("http://mastersoftwaretechnologies")) {
-
                                 new DownloadImageFromURl(new TaskListener() {
                                     @Override
                                     public void onFinished(String result) {
-
-
                                         addMessageToLocal(userName, "@picPath>" + result, "false", senderOrGrpId, typeMessage, onMessagePicture);
-
-
                                     }
                                 }).execute(senderMessage);
-
-
                             } else {
-
-
                                 addMessageToLocal(userName, senderMessage, "false", senderOrGrpId, typeMessage, onMessagePicture);
                             }
                             removeTyping(senderOrGrpId);
 
                         } else {
-
                             //   addMessageOfOther(userName, senderMessage, "false", friendsId, "private");
-
-
                             if (senderMessage.contains("http://mastersoftwaretechnologies")) {
-
                                 new DownloadImageFromURl(new TaskListener() {
                                     @Override
                                     public void onFinished(String result) {
-
-
                                         addMessageOfOther(userName, "@picPath>" + result, "false", id, typeMessage, onMessagePicture);
-
                                         createNotification(userName, "Image");
-
                                     }
                                 }).execute(senderMessage);
-
-
                             } else {
-
                                 addMessageOfOther(userName, senderMessage, "false", id, typeMessage, onMessagePicture);
                                 createNotification(userName, senderMessage);
                             }
-
                         }
-
-
                     } catch (Exception e) {
-
                         e.printStackTrace();
                     }
                 }
             });
         }
     };
-
-
     private Emitter.Listener onGroupMessage = new Emitter.Listener() {
         @Override
         public void call(final Object... args) {
-
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-
                     try {
                         JSONObject data = (JSONObject) args[0];
-
                         Log.e("data", data + "");
-
                         friendsId = null;
                         gUserName = data.getString("userName");
                         gSenderMessage = data.getString("message");
-
                         gId = data.getString("groupId");
                         onGrpMessagePicture = data.getString("profilePic");
                         gTypeMessage = data.getString("typeMessage");
 
 
                         if (gId.equals(senderOrGrpId)) {
-
-
                             if (gSenderMessage.contains("http://mastersoftwaretechnologies")) {
-
                                 new DownloadImageFromURl(new TaskListener() {
                                     @Override
                                     public void onFinished(String result) {
-
-
                                         addMessageToLocal(gUserName, "@picPath>" + result, "false", senderOrGrpId, gTypeMessage, onGrpMessagePicture);
-
                                         // createNotification(gUserName, "Image");
                                     }
                                 }).execute(gSenderMessage);
-
-
                             } else {
                                 addMessageToLocal(gUserName, gSenderMessage, "false", senderOrGrpId, gTypeMessage, onGrpMessagePicture);
                                 //    createNotification(gUserName, gSenderMessage);
                             }
-
-
                         } else {
-
-
                             if (gSenderMessage.contains("http://mastersoftwaretechnologies")) {
-
                                 new DownloadImageFromURl(new TaskListener() {
                                     @Override
                                     public void onFinished(String result) {
-
-
                                         addMessageOfOther(gUserName, "@picPath>" + result, "false", gId, gTypeMessage, onGrpMessagePicture);
                                         createNotification(gUserName, "Image");
                                     }
                                 }).execute(gSenderMessage);
-
-
                             } else {
                                 addMessageOfOther(gUserName, gSenderMessage, "false", gId, gTypeMessage, onGrpMessagePicture);
                                 createNotification(gUserName, gSenderMessage);
                             }
-
-
                             //   addMessageOfOther(userName, senderMessage, "false", friendsId, "private");
-
                         }
-
-
                     } catch (Exception e) {
-
                         e.printStackTrace();
                     }
-
-
                 }
             });
-
-
         }
     };
-
 
     private void attemptSend() {
         String message = editMsg.getText().toString();
@@ -577,19 +467,23 @@ public class ChatMessageActivity extends AppCompatActivity {
                     jMessage.put("isMedia", false);
                     jMessage.put("isPrivate", true);
                     jMessage.put("userName", mSession.getPrefrenceString(Constants.USERNAME));
-
                     //  jMessage.put("userImage", contactImage);
-
                     if (mSocket.connected()) {
                         mSocket.emit("message", jMessage);
                         addMessageToLocal(friendName, message, "true", senderOrGrpId, "private", contactImage);
                         editMsg.setText("");
                         Session.getUpdateRecentChat();
+
+
+/////////////////////////////////////////////////////////////////////
+                        JSONObject user = new JSONObject();
+                        user.put("id", mSession.getPrefrenceString(Constants.USER_ID));
+                        mSocket.emit("userStopTyping", user);
+                        ///////////////////////////////////
                     } else {
                         Toast.makeText(getApplicationContext(), "Connection Error !! ", Toast.LENGTH_SHORT).show();
                     }
                 } else {
-
                     JSONObject jMessage = new JSONObject();
                     jMessage.put("userTo", senderOrGrpId);
                     jMessage.put("userId", mSession.getPrefrenceString(Constants.USER_ID));
@@ -605,10 +499,7 @@ public class ChatMessageActivity extends AppCompatActivity {
                     } else {
                         Toast.makeText(getApplicationContext(), "Connection Error !! ", Toast.LENGTH_SHORT).show();
                     }
-
-
                 }
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -616,9 +507,7 @@ public class ChatMessageActivity extends AppCompatActivity {
         }
     }
 
-
     private void addMessageToLocal(String username, String message, String value, String friendid, String messageType, String contactImage) {
-
         MessageDto messageDto = new MessageDto();
         messageDto.setMessage(message);
         messageDto.setUserName(username);
@@ -635,9 +524,7 @@ public class ChatMessageActivity extends AppCompatActivity {
         chatMessageModel.setUserName(username);
         chatMessageModel.setDateTime("" + System.currentTimeMillis());
         chatMessageModel.setTypeMessage(messageType);
-
         allMessageList.add(chatMessageModel);
-
 
         RecentChatDto recentChatDto = new RecentChatDto();
         recentChatDto.setSenderId(friendid);
@@ -648,22 +535,17 @@ public class ChatMessageActivity extends AppCompatActivity {
         recentChatDto.setFrom(value);
         recentChatDto.setUserName(username);
         recentChatDto.setMessageCount("0");
-
-
         recentChatDao.insert(recentChatDto);
 
         adapter.notifyItemInserted(allMessageList.size() - 1);
         scrollToBottom();
-
     }
 
     private void scrollToBottom() {
         lvChatMessages.scrollToPosition(adapter.getItemCount() - 1);
     }
 
-
     private void addMessageOfOther(String username, String message, String value, String friendid, String messageType, String contactImage) {
-
         MessageDto messageDto = new MessageDto();
         messageDto.setMessage(message);
         messageDto.setUserName(username);
@@ -673,7 +555,6 @@ public class ChatMessageActivity extends AppCompatActivity {
         messageDto.setTypeMessage(messageType);
         messageDao.insert(messageDto);
 
-
         List<RecentChatDto> list1 = recentChatDao.getRecentListFriendId(friendid);
         if (list1.size() > 0) {
             notificationCount = Integer.parseInt(list1.get(0).getMessageCount());
@@ -681,7 +562,6 @@ public class ChatMessageActivity extends AppCompatActivity {
         } else {
             notificationCount = 0;
         }
-
 
         RecentChatDto recentChatDto = new RecentChatDto();
         recentChatDto.setSenderId(friendid);
@@ -692,29 +572,25 @@ public class ChatMessageActivity extends AppCompatActivity {
         recentChatDto.setFrom(value);
         recentChatDto.setUserName(username);
         recentChatDto.setMessageCount("" + notificationCount);
-
-
         recentChatDao.insert(recentChatDto);
 
         Session.getUpdateRecentChat();
-
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
-        mSocket.emit("offline", mSession.getPrefrenceString(Constants.USER_ID));
-        mSocket.disconnect();
+        //   mSocket.emit("offline", mSession.getPrefrenceString(Constants.USER_ID));
+        //    mSocket.disconnect();
         mSocket.off("init", onInit);
         mSocket.off("message", onNewMessage);
         mSocket.off("groupMsg", onGroupMessage);
         mSocket.off("isUserStatus", getUserStatus);
         mSocket.off("onlineUser", userOnlineStatus);
         mSocket.off("offlineUser", userOfflineStatus);
-
+        mSocket.off("typingEvent", onUserTyping);
+        mSocket.off("userStopTyping", onTypingStops);
     }
-
 
     public void changeProfile() {
         final Dialog dialog = new Dialog(this);
@@ -754,12 +630,8 @@ public class ChatMessageActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-
         if (resultCode == RESULT_OK) {
             if (requestCode == 2) {
-
-
                 try {
                     imgBitmap = (Bitmap) data.getExtras().get("data");
                     ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -769,26 +641,20 @@ public class ChatMessageActivity extends AppCompatActivity {
                     imagePath = Utils.getAllImageAndVideoFilePath(this, temUri);
                     userImage = "data:image/png;base64," + BitMapToString(new UserPicture(temUri, getContentResolver()).getBitmap());
                     openSocket();
-
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             attemptPicSend();
                         }
                     }, 1000);
-
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
-
             } else if (requestCode == 3) {
-
                 try {
                     Uri selectedImageUri = data.getData();
                     imgBitmap = new UserPicture(selectedImageUri, getContentResolver()).getBitmap();
                     //     ivGrpImage.setImageBitmap(new UserPicture(selectedImageUri, getContentResolver()).getBitmap());
-
                     imagePath = Utils.getAllImageAndVideoFilePath(this, selectedImageUri);
                     userImage = "data:image/png;base64," + BitMapToString(new UserPicture(selectedImageUri, getContentResolver()).getBitmap());
                     openSocket();
@@ -798,10 +664,7 @@ public class ChatMessageActivity extends AppCompatActivity {
                             attemptPicSend();
                         }
                     }, 1000);
-
-
                 } catch (Exception e) {
-
                     e.printStackTrace();
                 }
             }
@@ -809,7 +672,6 @@ public class ChatMessageActivity extends AppCompatActivity {
     }
 
     private void attemptPicSend() {
-
         try {
             if (typeMessageFrom.equals("private")) {
                 JSONObject jMessage = new JSONObject();
@@ -819,9 +681,7 @@ public class ChatMessageActivity extends AppCompatActivity {
                 jMessage.put("isMedia", true);
                 jMessage.put("isPrivate", true);
                 jMessage.put("userName", mSession.getPrefrenceString(Constants.USERNAME));
-
                 //  jMessage.put("userImage", contactImage);
-
                 if (mSocket.connected()) {
                     mSocket.emit("message", jMessage);
                     addMessageToLocal(friendName, "@picPath>" + imagePath, "true", senderOrGrpId, "private", contactImage);
@@ -831,7 +691,6 @@ public class ChatMessageActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Connection Error !! ", Toast.LENGTH_SHORT).show();
                 }
             } else {
-
                 JSONObject jMessage = new JSONObject();
                 jMessage.put("userTo", senderOrGrpId);
                 jMessage.put("userId", mSession.getPrefrenceString(Constants.USER_ID));
@@ -847,19 +706,13 @@ public class ChatMessageActivity extends AppCompatActivity {
                 } else {
                     Toast.makeText(getApplicationContext(), "Connection Error !! ", Toast.LENGTH_SHORT).show();
                 }
-
-
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
     }
 
     ////////////////////////////////////////
-
     public Uri getImageUri(Context inContext, Bitmap inImage) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
@@ -887,36 +740,35 @@ public class ChatMessageActivity extends AppCompatActivity {
         return temp;
     }
 
-
     @Override
     protected void onStop() {
         super.onStop();
-        mSocket.emit("offline", mSession.getPrefrenceString(Constants.USER_ID));
-        mSocket.disconnect();
+        //     mSocket.emit("offline", mSession.getPrefrenceString(Constants.USER_ID));
+        //     mSocket.disconnect();
         mSocket.off("init", onInit);
         mSocket.off("message", onNewMessage);
         mSocket.off("groupMsg", onGroupMessage);
         mSocket.off("isUserStatus", getUserStatus);
         mSocket.off("onlineUser", userOnlineStatus);
         mSocket.off("offlineUser", userOfflineStatus);
-
+        mSocket.off("typingEvent", onUserTyping);
+        mSocket.off("userStopTyping", onTypingStops);
     }
-
 
     @Override
     protected void onPause() {
         super.onPause();
-        mSocket.emit("offline", mSession.getPrefrenceString(Constants.USER_ID));
-        mSocket.disconnect();
+        //      mSocket.emit("offline", mSession.getPrefrenceString(Constants.USER_ID));
+        //       mSocket.disconnect();
         mSocket.off("init", onInit);
         mSocket.off("message", onNewMessage);
         mSocket.off("groupMsg", onGroupMessage);
         mSocket.off("isUserStatus", getUserStatus);
         mSocket.off("onlineUser", userOnlineStatus);
         mSocket.off("offlineUser", userOfflineStatus);
-
+        mSocket.off("typingEvent", onUserTyping);
+        mSocket.off("userStopTyping", onTypingStops);
     }
-
 
     public interface TaskListener {
         public void onFinished(String result);
@@ -927,19 +779,13 @@ public class ChatMessageActivity extends AppCompatActivity {
         ProgressBar mProgressBar;
 
         public DownloadImageFromURl(TaskListener listner) {
-
-
             taskListener = listner;
-
         }
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-
-
 //            showDialog(progress_bar_type);
-
         }
 
         @Override
@@ -988,10 +834,8 @@ public class ChatMessageActivity extends AppCompatActivity {
 //            pDialog.setProgress(Integer.parseInt(progress[0]));
         }
 
-
         @Override
         protected void onPostExecute(String file_url) {
-
 
             if (this.taskListener != null) {
 
@@ -999,35 +843,16 @@ public class ChatMessageActivity extends AppCompatActivity {
                 this.taskListener.onFinished(file_url);
             }
             //     pdfView.fromFile(new File(Environment.getExternalStorageDirectory().toString() + "/pdf/hhhh.pdf")).defaultPage(1).onPageChange(PresonalizeMedicalProfileActivity.this).load();
-
-
         }
-
-
     }
 
-
     private void createNotification(String userName, String notification) {
-
         Bitmap bmp = BitmapFactory.decodeResource((ChatMessageActivity.this).getResources(), R.mipmap.notification);
-       /* Context context = getBaseContext();
-        NotificationCompat.Builder mBuilder = (NotificationCompat.Builder) new NotificationCompat.Builder(context).setLargeIcon(bmp).setContentTitle("MssChat").setContentText(notification);
-
-        NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        mNotificationManager.notify(0, mBuilder.build());*/
-
-
         NotificationCompat.Builder mBuilder = (NotificationCompat.Builder) new NotificationCompat.Builder(ChatMessageActivity.this).setLargeIcon(bmp).setSmallIcon(R.mipmap.notification).setContentTitle(userName).setContentText(notification).setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
-
-
         Intent resultIntent = new Intent(this, MainActivity.class);
-
-
         resultIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(ChatMessageActivity.this);
-
         stackBuilder.addParentStack(MainActivity.class);
-
         stackBuilder.addNextIntent(resultIntent);
         PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(resultPendingIntent);
@@ -1035,21 +860,24 @@ public class ChatMessageActivity extends AppCompatActivity {
 // mId allows you to update the notification later on.
         mBuilder.setAutoCancel(true);
         mNotificationManager.notify(mId, mBuilder.build());
-
-
     }
 
     private Runnable onTypingTimeout = new Runnable() {
         @Override
         public void run() {
-            if (!mTyping)
-                return;
+            try {
+                if (!mTyping)
+                    return;
 
-            mTyping = false;
-            mSocket.emit("stop typing");
+                mTyping = false;
+                JSONObject user = new JSONObject();
+                user.put("id", mSession.getPrefrenceString(Constants.USER_ID));
+                mSocket.emit("userStopTyping", user);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     };
-
 
     private void removeTyping(String username) {
 
@@ -1064,92 +892,96 @@ public class ChatMessageActivity extends AppCompatActivity {
     private Emitter.Listener getUserStatus = new Emitter.Listener() {
         @Override
         public void call(final Object... args) {
-
-
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-
-
                     try {
-
                         JSONObject data = (JSONObject) args[0];
-
-
                         String status = data.getString("status");
-
                         mtxtStatus.setText(status);
-
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-
-
                 }
             });
-
         }
     };
-
-
     private Emitter.Listener userOnlineStatus = new Emitter.Listener() {
         @Override
         public void call(final Object... args) {
-
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-
-
                     try {
-
                         JSONObject data = (JSONObject) args[0];
-
-
                         String status = data.getString("id");
-
                         if (status.equals(senderOrGrpId)) {
                             mtxtStatus.setText("online");
                         }
-
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-
-
+                }
+            });
+        }
+    };
+    private Emitter.Listener userOfflineStatus = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        JSONObject data = (JSONObject) args[0];
+                        String status = data.getString("id");
+                        if (status.equals(senderOrGrpId)) {
+                            mtxtStatus.setText("offline");
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             });
 
 
         }
     };
-
-
-    private Emitter.Listener userOfflineStatus = new Emitter.Listener() {
+    private Emitter.Listener onUserTyping = new Emitter.Listener() {
         @Override
         public void call(final Object... args) {
-
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-
-
                     try {
-
                         JSONObject data = (JSONObject) args[0];
-
-
                         String status = data.getString("id");
-
                         if (status.equals(senderOrGrpId)) {
-                            mtxtStatus.setText("offline");
+                            mtxtStatus.setText("typing...");
                         }
-
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+                }
+            });
 
 
+        }
+    };
+    private Emitter.Listener onTypingStops = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        JSONObject data = (JSONObject) args[0];
+                        String status = data.getString("id");
+                        if (status.equals(senderOrGrpId)) {
+                            mSocket.emit("isUserStatus", senderOrGrpId);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             });
 
