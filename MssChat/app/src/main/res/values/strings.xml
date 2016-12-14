@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MssChat</string>
+    <string name="app_name">ChatApp</string>
 
 
     <string name="error_field_required">Campo Obrigatório</string>

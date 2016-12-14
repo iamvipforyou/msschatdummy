@@ -153,6 +153,7 @@ public class ChatMessageActivity extends AppCompatActivity {
     String gId = null;
     String gSenderMessage = null;
     String gTypeMessage = null;
+    String gFromUser = null;
     private static final int TYPING_TIMER_LENGTH = 600;
     ////////////
     private boolean mTyping = false;
@@ -292,6 +293,8 @@ public class ChatMessageActivity extends AppCompatActivity {
         try {
             appController = new AppController();
             mSocket = appController.getSocket();
+
+
             mSocket.on("init", onInit);
             mSocket.on("message", onNewMessage);
             mSocket.on("groupMsg", onGroupMessage);
@@ -303,6 +306,8 @@ public class ChatMessageActivity extends AppCompatActivity {
             mSocket.on("offlineUser", userOfflineStatus);
             mSocket.on("typingEvent", onUserTyping);
             mSocket.on("userStopTyping", onTypingStops);
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -415,7 +420,7 @@ public class ChatMessageActivity extends AppCompatActivity {
                         gId = data.getString("groupId");
                         onGrpMessagePicture = data.getString("profilePic");
                         gTypeMessage = data.getString("typeMessage");
-
+                        gFromUser = data.getString("fromuser");
 
                         if (gId.equals(senderOrGrpId)) {
                             if (gSenderMessage.contains("http://mastersoftwaretechnologies")) {
@@ -427,7 +432,7 @@ public class ChatMessageActivity extends AppCompatActivity {
                                     }
                                 }).execute(gSenderMessage);
                             } else {
-                                addMessageToLocal(gUserName, gSenderMessage, "false", senderOrGrpId, gTypeMessage, onGrpMessagePicture);
+                                addMessageToLocal(gUserName, gFromUser + " says:- " + gSenderMessage, "false", senderOrGrpId, gTypeMessage, onGrpMessagePicture);
                                 //    createNotification(gUserName, gSenderMessage);
                             }
                         } else {
@@ -440,7 +445,7 @@ public class ChatMessageActivity extends AppCompatActivity {
                                     }
                                 }).execute(gSenderMessage);
                             } else {
-                                addMessageOfOther(gUserName, gSenderMessage, "false", gId, gTypeMessage, onGrpMessagePicture);
+                                addMessageOfOther(gUserName, gFromUser + " says:- " + gSenderMessage, "false", gId, gTypeMessage, onGrpMessagePicture);
                                 createNotification(gUserName, gSenderMessage);
                             }
                             //   addMessageOfOther(userName, senderMessage, "false", friendsId, "private");

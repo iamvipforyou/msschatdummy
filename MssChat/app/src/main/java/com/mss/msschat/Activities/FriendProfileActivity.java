@@ -83,6 +83,7 @@ public class FriendProfileActivity extends AppCompatActivity {
     }
 
     private void initUI() {
+        Utils.setStatusBarColor(FriendProfileActivity.this);
         llBack.setVisibility(View.VISIBLE);
         ibtnBack.setImageResource(R.mipmap.ic_keyboard_backspace_white_24dp);
         ibtnBack.setOnClickListener(new View.OnClickListener() {

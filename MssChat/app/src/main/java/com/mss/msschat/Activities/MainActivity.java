@@ -53,11 +53,13 @@ import java.io.BufferedInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.socket.client.IO;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
 
@@ -88,6 +90,7 @@ public class MainActivity extends AppCompatActivity {
     String gId = null;
     String gSenderMessage = null;
     String gTypeMessage = null;
+    String gFromUser = null;
     private static final int TYPING_TIMER_LENGTH = 600;
     ////////////
 
@@ -265,13 +268,19 @@ public class MainActivity extends AppCompatActivity {
 
     private void openSocket() {
         try {
-            appController = new AppController();
-            mSocket = appController.getSocket();
+            //   appController = new AppController();
+            //   mSocket = appController.getSocket();
+
+
+            mSocket = IO.socket(Constants.SOCKET_URL);
+
+
             mSocket.on("message", onNewMessage);
             mSocket.on("groupMsg", onGroupMessage);
             mSocket.connect();
             mSocket.emit("init", new AppPreferences(MainActivity.this).getPrefrenceString(Constants.USER_ID));
-        } catch (Exception e) {
+
+        } catch (URISyntaxException e) {
             e.printStackTrace();
         }
     }
@@ -283,16 +292,16 @@ public class MainActivity extends AppCompatActivity {
 
         mSocket.off("message", onNewMessage);
         mSocket.off("groupMsg", onGroupMessage);
-       mSocket.disconnect();
+        //  mSocket.disconnect();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
 
-        mSocket.off("message", onNewMessage);
-        mSocket.off("groupMsg", onGroupMessage);
-        mSocket.disconnect();
+        //   mSocket.off("message", onNewMessage);
+        //   mSocket.off("groupMsg", onGroupMessage);
+        //    mSocket.disconnect();
     }
 
 
@@ -300,9 +309,20 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-      //  mSocket.on("message", onNewMessage);
-     //   mSocket.on("groupMsg", onGroupMessage);
-    //    mSocket.connect();
+
+        //   mSocket.on("message", onNewMessage);
+        //    mSocket.on("groupMsg", onGroupMessage);
+
+
+    }
+
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+
+        mSocket.on("message", onNewMessage);
+        mSocket.on("groupMsg", onGroupMessage);
 
     }
 
@@ -310,6 +330,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         mSocket.emit("offline", new AppPreferences(MainActivity.this).getPrefrenceString(Constants.USER_ID));
+        mSocket.off("message", onNewMessage);
+        mSocket.off("groupMsg", onGroupMessage);
         mSocket.disconnect();
 
     }
@@ -368,7 +390,7 @@ public class MainActivity extends AppCompatActivity {
                         gId = data.getString("groupId");
                         onGrpMessagePicture = data.getString("profilePic");
                         gTypeMessage = data.getString("typeMessage");
-
+                        gFromUser = data.getString("fromuser");
                         if (gSenderMessage.contains("http://mastersoftwaretechnologies")) {
                             new DownloadImageFromURl(new TaskListener() {
                                 @Override
@@ -378,7 +400,7 @@ public class MainActivity extends AppCompatActivity {
                                 }
                             }).execute(gSenderMessage);
                         } else {
-                            addMessageOfOther(gUserName, gSenderMessage, "false", gId, gTypeMessage, onGrpMessagePicture);
+                            addMessageOfOther(gUserName, gFromUser + " says:- " + gSenderMessage, "false", gId, gTypeMessage, onGrpMessagePicture);
                             createNotification(gUserName, gSenderMessage);
                         }
                         //   addMessageOfOther(userName, senderMessage, "false", friendsId, "private");

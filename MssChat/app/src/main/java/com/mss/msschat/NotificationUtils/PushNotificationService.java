@@ -54,6 +54,7 @@ public class PushNotificationService extends FirebaseMessagingService {
     String userName;
     String senderId;
     String messageType;
+    String gFromUser;
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
@@ -72,9 +73,8 @@ public class PushNotificationService extends FirebaseMessagingService {
                 userName = notificationDataObj.getString("userName");
                 senderId = notificationDataObj.getString("userId");
 
-
-                addMessageToLocal(userName, userMessage, "false", senderId, messageType, profilePic);
                 createNotification(userMessage);
+                addMessageToLocal(userName, userMessage, "false", senderId, messageType, profilePic);
 
 
             } else if (messageType.equals(Constants.GROUP_TYPE)) {
@@ -84,9 +84,10 @@ public class PushNotificationService extends FirebaseMessagingService {
                 userMessage = notificationDataObj.getString("message");
                 userName = notificationDataObj.getString("userName");
                 senderId = notificationDataObj.getString("groupId");
-
-                addMessageToLocal(userName, userMessage, "false", senderId, messageType, profilePic);
+                gFromUser = notificationDataObj.getString("fromuser");
                 createNotification(userMessage);
+                addMessageToLocal(userName, gFromUser + " says:- " + userMessage, "false", senderId, messageType, profilePic);
+
             } else {
 
 
