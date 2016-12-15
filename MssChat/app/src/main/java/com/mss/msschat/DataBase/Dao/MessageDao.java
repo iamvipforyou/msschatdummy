@@ -36,7 +36,7 @@ public class MessageDao extends Dao<MessageDto> {
     @Override
     public void insert(MessageDto dto) {
 
-        insertOrReplace(dto, "messageId", dto.getMessageId());
+        insertOrReplace(dto, "messageId", dto.getMessageId(),mContext);
 
     }
 

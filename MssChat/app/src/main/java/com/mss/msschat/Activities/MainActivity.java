@@ -239,6 +239,7 @@ public class MainActivity extends AppCompatActivity {
 
                 Intent detailsIntent = new Intent(MainActivity.this, FriendProfileActivity.class);
                 detailsIntent.putExtra("userId", new AppPreferences(MainActivity.this).getPrefrenceString(Constants.USER_ID));
+                detailsIntent.putExtra("UserProfile","update");
                 startActivity(detailsIntent);
 
 
@@ -292,6 +293,8 @@ public class MainActivity extends AppCompatActivity {
 
         mSocket.off("message", onNewMessage);
         mSocket.off("groupMsg", onGroupMessage);
+        mSocket.emit("offline", new AppPreferences(MainActivity.this).getPrefrenceString(Constants.USER_ID));
+
         //  mSocket.disconnect();
     }
 
@@ -320,7 +323,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onRestart() {
         super.onRestart();
-
+        mSocket.emit("init", new AppPreferences(MainActivity.this).getPrefrenceString(Constants.USER_ID));
         mSocket.on("message", onNewMessage);
         mSocket.on("groupMsg", onGroupMessage);
 

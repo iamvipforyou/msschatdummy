@@ -86,8 +86,12 @@ public class PushNotificationService extends FirebaseMessagingService {
                 senderId = notificationDataObj.getString("groupId");
                 gFromUser = notificationDataObj.getString("fromuser");
                 createNotification(userMessage);
-                addMessageToLocal(userName, gFromUser + " says:- " + userMessage, "false", senderId, messageType, profilePic);
+                if (userMessage.contains("http://mastersoftwaretechnologies")) {
+                    addMessageToLocal(userName, userMessage, "false", senderId, messageType, profilePic);
+                } else {
+                    addMessageToLocal(userName, gFromUser + " says:- " + userMessage, "false", senderId, messageType, profilePic);
 
+                }
             } else {
 
 

@@ -34,7 +34,7 @@ public class RecentChatDao extends Dao<RecentChatDto> {
     @Override
     public void insert(RecentChatDto dto) {
 
-        insertOrReplace(dto, "rSenderId", dto.getSenderId());
+        insertOrReplace(dto, "rSenderId", dto.getSenderId(), mContext);
 
     }
 

@@ -38,6 +38,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.mss.msschat.Adapters.ChatMessageAdapter;
 import com.mss.msschat.AppUtils.AppController;
 import com.mss.msschat.AppUtils.AppPreferences;
@@ -223,7 +224,7 @@ public class ChatMessageActivity extends AppCompatActivity {
                 contactImage = dataIntent.getStringExtra("user_image");
                 toolbarTitle.setText(friendName);
                 if (contactImage != null) {
-                    Picasso.with(ChatMessageActivity.this).load(contactImage).into(imgProfile);
+                    Glide.with(ChatMessageActivity.this).load(contactImage).into(imgProfile);
                 } else {
                     Picasso.with(ChatMessageActivity.this).load(R.mipmap.ic_launcher).into(imgProfile);
                 }
@@ -585,7 +586,7 @@ public class ChatMessageActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        //   mSocket.emit("offline", mSession.getPrefrenceString(Constants.USER_ID));
+        mSocket.emit("offline", mSession.getPrefrenceString(Constants.USER_ID));
         //    mSocket.disconnect();
         mSocket.off("init", onInit);
         mSocket.off("message", onNewMessage);
@@ -763,7 +764,7 @@ public class ChatMessageActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        //      mSocket.emit("offline", mSession.getPrefrenceString(Constants.USER_ID));
+        mSocket.emit("offline", mSession.getPrefrenceString(Constants.USER_ID));
         //       mSocket.disconnect();
         mSocket.off("init", onInit);
         mSocket.off("message", onNewMessage);

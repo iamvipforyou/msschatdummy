@@ -12,6 +12,8 @@ import com.mss.msschat.Models.RegistrationModel;
 import com.mss.msschat.Models.RegistrationResponse;
 import com.mss.msschat.Models.RemoveGroupUserResponse.RemoveGroupUserResponse;
 import com.mss.msschat.Models.RemoveGrpUserModel;
+import com.mss.msschat.Models.UpdateProfileData;
+import com.mss.msschat.Models.UpdateProfileResponse;
 import com.mss.msschat.Models.UserDetailsRes.UserDetailsResponse;
 import com.mss.msschat.Models.VerifyContactsModel;
 
@@ -54,5 +56,7 @@ public interface ApiInterface {
     @GET("api/getUserDetailById/{userId}")
     Call<UserDetailsResponse> getUserDetails(@Path("userId") String userId);
 
+    @POST("api/updateUserProfile")
+    Call<UpdateProfileResponse> getupdateProfileResponse(@Body UpdateProfileData updateProfileData);
 
 }

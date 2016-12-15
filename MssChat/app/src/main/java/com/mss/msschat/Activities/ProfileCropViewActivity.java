@@ -11,6 +11,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -33,7 +35,7 @@ import permissions.dispatcher.RuntimePermissions;
 
 
 @RuntimePermissions
-public class ProfileCropViewActivity extends Activity implements View.OnClickListener {
+public class ProfileCropViewActivity extends AppCompatActivity implements View.OnClickListener {
     Uri selectedImageUri = null;
     private static final int REQUEST_PICK_IMAGE = 10011;
     private static final int REQUEST_SAF_PICK_IMAGE = 10012;
@@ -41,6 +43,8 @@ public class ProfileCropViewActivity extends Activity implements View.OnClickLis
     private Bitmap imgBitmap;
     private CropImageView mCropView;
     Button btnDone;
+    Button btnCancel;
+    Toolbar mToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +55,8 @@ public class ProfileCropViewActivity extends Activity implements View.OnClickLis
     }
 
     private void populateUi() {
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        com.mss.msschat.AppUtils.Utils.setClassTitle(ProfileCropViewActivity.this, "Crop Image", mToolbar);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         Window window = getWindow();
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -71,7 +77,9 @@ public class ProfileCropViewActivity extends Activity implements View.OnClickLis
         }
         mCropView.setCropMode(CropImageView.CropMode.CIRCLE);
         btnDone = (Button) findViewById(R.id.btn_done);
+        btnCancel = (Button) findViewById(R.id.btn_cancel);
         btnDone.setOnClickListener(this);
+        btnCancel.setOnClickListener(this);
     }
 
     @NeedsPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -125,22 +133,17 @@ public class ProfileCropViewActivity extends Activity implements View.OnClickLis
     }
 
     private void showRationaleDialog(@StringRes int messageResId, final PermissionRequest request) {
-        new AlertDialog.Builder(this)
-                .setPositiveButton("allow", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(@NonNull DialogInterface dialog, int which) {
-                        request.proceed();
-                    }
-                })
-                .setNegativeButton("deny", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(@NonNull DialogInterface dialog, int which) {
-                        request.cancel();
-                    }
-                })
-                .setCancelable(false)
-                .setMessage(messageResId)
-                .show();
+        new AlertDialog.Builder(this).setPositiveButton("allow", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(@NonNull DialogInterface dialog, int which) {
+                request.proceed();
+            }
+        }).setNegativeButton("deny", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(@NonNull DialogInterface dialog, int which) {
+                request.cancel();
+            }
+        }).setCancelable(false).setMessage(messageResId).show();
     }
 
     public static ProfileCropViewActivity getInstance() {
@@ -189,6 +192,9 @@ public class ProfileCropViewActivity extends Activity implements View.OnClickLis
         switch (v.getId()) {
             case R.id.btn_done:
                 ProfileCropViewActivityPermissionsDispatcher.cropImageWithCheck(ProfileCropViewActivity.this);
+                break;
+            case R.id.btn_cancel:
+                finish();
                 break;
         }
     }

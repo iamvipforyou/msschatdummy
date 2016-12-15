@@ -67,7 +67,7 @@
                                     android:layout_height="match_parent"
                                     android:layout_gravity="center"
                                     android:scaleType="centerCrop"
-                                    android:src="@color/app_color"></de.hdodenhof.circleimageview.CircleImageView>
+                                    android:src="@drawable/profileicon"></de.hdodenhof.circleimageview.CircleImageView>
                             </LinearLayout>
 
                             <View
