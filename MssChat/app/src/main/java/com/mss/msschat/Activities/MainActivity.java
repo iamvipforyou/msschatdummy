@@ -329,6 +329,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -368,7 +369,7 @@ public class MainActivity extends AppCompatActivity {
                             }).execute(senderMessage);
                         } else {
                             addMessageOfOther(userName, senderMessage, "false", id, typeMessage, onMessagePicture);
-                            createNotification(userName, senderMessage);
+                             createNotification(userName, senderMessage);
                         }
 
                     } catch (Exception e) {

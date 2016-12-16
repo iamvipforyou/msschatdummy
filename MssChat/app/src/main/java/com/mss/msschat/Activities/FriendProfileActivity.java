@@ -30,12 +30,15 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.mss.msschat.AppUtils.ApiClient;
+import com.mss.msschat.AppUtils.AppPreferences;
 import com.mss.msschat.AppUtils.Connectivity;
+import com.mss.msschat.AppUtils.Constants;
 import com.mss.msschat.AppUtils.UserPicture;
 import com.mss.msschat.AppUtils.Utils;
 import com.mss.msschat.Interfaces.ApiInterface;
 import com.mss.msschat.Models.UpdateProfileData;
 import com.mss.msschat.Models.UpdateProfileResponse;
+import com.mss.msschat.Models.UpdateProfileResponseData;
 import com.mss.msschat.Models.UserDetailsRes.UserDetailsResponse;
 import com.mss.msschat.Models.UserDetailsRes.UserDetailsResponseData;
 import com.mss.msschat.R;
@@ -389,6 +392,10 @@ public class FriendProfileActivity extends AppCompatActivity {
 
                             Utils.showErrorOnTop(viewGroup, "Profile updated Successfully");
 
+                            UpdateProfileResponseData updateProfileResponseData = updateProfileResponse.getData();
+                            String userName = updateProfileResponseData.getName();
+                            new AppPreferences(FriendProfileActivity.this).setPrefrenceString(Constants.USERNAME, userName);
+
 
                             initUI();
 
@@ -397,7 +404,7 @@ public class FriendProfileActivity extends AppCompatActivity {
                             Utils.showErrorOnTop(viewGroup, updateProfileResponse.getResponseMessage());
 
                         }
-                    }else{
+                    } else {
 
                         Utils.dismissProgressDialog();
                     }

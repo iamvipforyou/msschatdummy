@@ -11,8 +11,8 @@ public class Constants {
     public static final String USER_MOBILE_NUMBER = "mob_Number";
     public static final String PATTERN_SHA_VALUE = "patternSha";
     public static final int SUCCESSFUL = 200;
-  //  public static final String SOCKET_URL = "http://mastersoftwaretechnologies.com:9007/";
-  public static final String SOCKET_URL = "http://mastersoftwaretechnologies.com:8023";
+    public static final String SOCKET_URL = "http://mastersoftwaretechnologies.com:9007/";
+    // public static final String SOCKET_URL = "http://mastersoftwaretechnologies.com:8023";
     public static final String USERNAME = "mUserName";
 
     public static final String GROUP_TYPE = "group";

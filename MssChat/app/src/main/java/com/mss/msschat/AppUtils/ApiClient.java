@@ -10,8 +10,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ApiClient {
 
 
-    //  public static final String BASE_URL = "http://mastersoftwaretechnologies.com:9006/";
-    public static final String BASE_URL = "http://mastersoftwaretechnologies.com:8022/";
+     public static final String BASE_URL = "http://mastersoftwaretechnologies.com:9006/";
+    //public static final String BASE_URL = "http://mastersoftwaretechnologies.com:8022/";
 
     private static Retrofit retrofit = null;
 

@@ -586,7 +586,7 @@ public class ChatMessageActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mSocket.emit("offline", mSession.getPrefrenceString(Constants.USER_ID));
+  //      mSocket.emit("offline", mSession.getPrefrenceString(Constants.USER_ID));
         //    mSocket.disconnect();
         mSocket.off("init", onInit);
         mSocket.off("message", onNewMessage);

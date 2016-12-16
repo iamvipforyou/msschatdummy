@@ -497,7 +497,7 @@ public class GroupDetailsActivity extends AppCompatActivity {
 
                     } else {
 
-                        Utils.showErrorOnTop(viewGroup, "Server Error !!");
+                        Utils.showErrorOnTop(viewGroup, "Unable To Delete Group !!");
                     }
 
 

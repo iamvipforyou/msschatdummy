@@ -94,6 +94,7 @@ public class AddGroupMembersActivity extends AppCompatActivity implements showSe
     }
 
     private void initUI() {
+
         btnDone = (FloatingActionButton) findViewById(R.id.btn_done);
         viewGroup = (ViewGroup) ((ViewGroup) this.findViewById(android.R.id.content)).getChildAt(0);
         populateUI();
@@ -101,6 +102,7 @@ public class AddGroupMembersActivity extends AppCompatActivity implements showSe
 
     private void populateUI() {
         Utils.setClassTitle(AddGroupMembersActivity.this, "Add Member", toolbar);
+        Utils.setStatusBarColor(AddGroupMembersActivity.this);
         try {
 
             Intent dataIntent = getIntent();
@@ -231,6 +233,7 @@ public class AddGroupMembersActivity extends AppCompatActivity implements showSe
                     } else {
 
                         Utils.dismissProgressDialog();
+                        Utils.showErrorOnTop(viewGroup, "Unable To Add Members !!");
                     }
 
 
